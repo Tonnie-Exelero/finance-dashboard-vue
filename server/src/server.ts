@@ -13,12 +13,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Import database connection
-import { connectToDatabase } from "./db/index.js";
+import { connectToDatabase } from "./db/index";
 
 // Import GraphQL schema and resolvers
-import { typeDefs } from "./graphql/schema/index.js";
-import { resolvers } from "./graphql/resolvers/index.js";
-import type { GraphQLContext } from "./types/index.js";
+import { typeDefs } from "./graphql/schema/index";
+import { resolvers } from "./graphql/resolvers/index";
+import type { GraphQLContext } from "./types/index";
 
 /**
  * Start the Apollo Server

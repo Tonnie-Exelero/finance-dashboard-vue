@@ -5,13 +5,13 @@
  *
  * @module graphql/resolvers/transactions
  */
-import { getClient } from "../../db/index.js";
+import { getClient } from "../../db/index";
 import type {
   Transaction,
   TransactionInput,
   GraphQLContext,
   PaginationParams,
-} from "../../types/index.js";
+} from "../../types/index";
 
 /**
  * Transaction resolvers

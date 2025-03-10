@@ -1,3 +1,5 @@
+@use "../abstracts" as a;
+
 /* Box sizing rules */
 *,
 *::before,
@@ -27,7 +29,7 @@ body {
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
   line-height: 1.5;
-  font-family: $font-family-sans;
+  font-family: a.$font-family-sans;
 }
 
 /* Remove list styles on ul, ol elements */
@@ -70,17 +72,17 @@ select {
 
 /* Set core theme variables */
 :root {
-  --background: #{$light-background};
-  --text: #{$light-text};
-  --text-muted: #{$light-text-muted};
-  --border: #{$light-border};
-  --card-bg: #{$light-card-bg};
+  --background: #{a.$light-background};
+  --text: #{a.$light-text};
+  --text-muted: #{a.$light-text-muted};
+  --border: #{a.$light-border};
+  --card-bg: #{a.$light-card-bg};
 }
 
 .dark {
-  --background: #{$dark-background};
-  --text: #{$dark-text};
-  --text-muted: #{$dark-text-muted};
-  --border: #{$dark-border};
-  --card-bg: #{$dark-card-bg};
+  --background: #{a.$dark-background};
+  --text: #{a.$dark-text};
+  --text-muted: #{a.$dark-text-muted};
+  --border: #{a.$dark-border};
+  --card-bg: #{a.$dark-card-bg};
 }

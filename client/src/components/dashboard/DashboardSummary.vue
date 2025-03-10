@@ -15,7 +15,7 @@
           >
             <TrendingUpIcon v-if="card.percentChange >= 0" />
             <TrendingDownIcon v-else />
-            <span>{{ Math.abs(card.percentChange) }}% from last month</span>
+            <span>{{ Math.abs(card.percentChange).toFixed(2) }}% from last month</span>
           </div>
         </div>
       </div>

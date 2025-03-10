@@ -1,31 +1,29 @@
+// Abstracts
+// Note: These are imported globally in vite.config.ts
+// @import 'abstracts/index';
+
+// Base styles
+@use "base/reset";
+@use "base/typography";
+
+// Components
+@use "components/button";
+@use "components/card";
+@use "components/form";
+@use "components/table";
+@use "components/modal";
+
+// Layout
+@use "layout/header";
+@use "layout/main";
+
+// Themes
+@use "themes/dark";
+
+// Utilities
+@use "utilities/custom";
+
 // Import Tailwind
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-// Abstracts
-// Note: These are imported globally in vite.config.ts
-// @import 'abstracts/variables';
-// @import 'abstracts/mixins';
-// @import 'abstracts/functions';
-
-// Base styles
-@import 'base/reset';
-@import 'base/typography';
-
-// Components
-@import 'components/button';
-@import 'components/card';
-@import 'components/form';
-@import 'components/table';
-@import 'components/modal';
-
-// Layout
-@import 'layout/header';
-@import 'layout/main';
-
-// Themes
-@import 'themes/dark';
-
-// Utilities
-@import 'utilities/custom';

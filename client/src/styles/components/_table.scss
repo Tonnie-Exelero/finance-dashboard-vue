@@ -1,79 +1,83 @@
+@use "../abstracts" as a;
+
 .table-container {
   overflow-x: auto;
-  @include custom-scrollbar;
+  @include a.custom-scrollbar;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  
-  th, td {
-    padding: $spacing-3 $spacing-4;
+
+  th,
+  td {
+    padding: a.$spacing-3 a.$spacing-4;
     text-align: left;
     border-bottom: 1px solid var(--border);
   }
-  
+
   th {
-    font-weight: $font-weight-medium;
+    font-weight: a.$font-weight-medium;
     color: var(--text-muted);
-    font-size: $font-size-xs;
+    font-size: a.$font-size-xs;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  
+
   td {
-    font-size: $font-size-sm;
+    font-size: a.$font-size-sm;
     color: var(--text);
   }
-  
+
   tbody tr {
-    transition: $transition-base;
-    
+    transition: a.$transition-base;
+
     &:hover {
       background-color: rgba(var(--border), 0.3);
     }
   }
-  
+
   &--striped {
     tbody tr:nth-child(odd) {
       background-color: rgba(var(--border), 0.1);
-      
+
       &:hover {
         background-color: rgba(var(--border), 0.3);
       }
     }
   }
-  
+
   &--bordered {
-    th, td {
+    th,
+    td {
       border: 1px solid var(--border);
     }
   }
-  
+
   &__actions {
     display: flex;
-    gap: $spacing-2;
+    gap: a.$spacing-2;
   }
 }
 
 .status-badge {
   display: inline-flex;
   align-items: center;
-  padding: $spacing-1 $spacing-2;
-  border-radius: $border-radius-full;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-medium;
-  
+  padding: a.$spacing-1 a.$spacing-2;
+  border-radius: a.$border-radius-full;
+  font-size: a.$font-size-xs;
+  font-weight: a.$font-weight-medium;
+
   &--completed {
-    @include status-badge($color-success);
+    @include a.status-badge(a.$color-success);
   }
-  
+
   &--pending {
-    @include status-badge($color-warning);
+    @include a.status-badge(a.$color-warning);
   }
-  
+
   &--failed {
-    @include status-badge($color-danger);
+    @include a.status-badge(a.$color-danger);
   }
 }
 
@@ -81,30 +85,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $spacing-4 0;
-  
+  padding: a.$spacing-4 0;
+
   &__info {
-    font-size: $font-size-sm;
+    font-size: a.$font-size-sm;
     color: var(--text-muted);
   }
-  
+
   &__controls {
     display: flex;
-    gap: $spacing-2;
+    gap: a.$spacing-2;
   }
-  
+
   &__button {
-    @include button-base;
-    padding: $spacing-2 $spacing-3;
-    font-size: $font-size-sm;
+    @include a.button-base;
+    padding: a.$spacing-2 a.$spacing-3;
+    font-size: a.$font-size-sm;
     background-color: var(--card-bg);
     border: 1px solid var(--border);
     color: var(--text);
-    
+
     &:hover:not(:disabled) {
       background-color: rgba(var(--border), 0.3);
     }
-    
+
     &:disabled {
       color: var(--text-muted);
     }

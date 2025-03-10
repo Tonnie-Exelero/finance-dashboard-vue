@@ -13,6 +13,7 @@ export interface DbConfig {
   database: string;
   user: string;
   password: string;
+  ssl: boolean;
 }
 
 /**

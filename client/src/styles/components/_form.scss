@@ -1,45 +1,47 @@
+@use "../abstracts" as a;
+
 .form-group {
-  margin-bottom: $spacing-4;
+  margin-bottom: a.$spacing-4;
 }
 
 .form-label {
   display: block;
-  margin-bottom: $spacing-2;
-  font-size: $font-size-sm;
-  font-weight: $font-weight-medium;
+  margin-bottom: a.$spacing-2;
+  font-size: a.$font-size-sm;
+  font-weight: a.$font-weight-medium;
   color: var(--text);
 }
 
 .form-control {
   display: block;
   width: 100%;
-  padding: $spacing-2 $spacing-3;
-  font-size: $font-size-base;
+  padding: a.$spacing-2 a.$spacing-3;
+  font-size: a.$font-size-base;
   line-height: 1.5;
   color: var(--text);
   background-color: var(--card-bg);
   background-clip: padding-box;
   border: 1px solid var(--border);
-  border-radius: $border-radius;
-  transition: $transition-base;
-  
+  border-radius: a.$border-radius;
+  transition: a.$transition-base;
+
   &:focus {
     outline: none;
-    border-color: $color-primary;
-    box-shadow: 0 0 0 3px rgba($color-primary, 0.3);
+    border-color: a.$color-primary;
+    box-shadow: 0 0 0 3px rgba(a.$color-primary, 0.3);
   }
-  
+
   &:disabled,
   &[readonly] {
     background-color: rgba(var(--border), 0.5);
     opacity: 0.7;
   }
-  
+
   &--error {
-    border-color: $color-danger;
-    
+    border-color: a.$color-danger;
+
     &:focus {
-      box-shadow: 0 0 0 3px rgba($color-danger, 0.3);
+      box-shadow: 0 0 0 3px rgba(a.$color-danger, 0.3);
     }
   }
 }
@@ -48,9 +50,9 @@ select.form-control {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right $spacing-3 center;
+  background-position: right a.$spacing-3 center;
   background-size: 16px;
-  padding-right: $spacing-8;
+  padding-right: a.$spacing-8;
 }
 
 textarea.form-control {
@@ -60,67 +62,67 @@ textarea.form-control {
 
 .form-text {
   display: block;
-  margin-top: $spacing-1;
-  font-size: $font-size-xs;
+  margin-top: a.$spacing-1;
+  font-size: a.$font-size-xs;
   color: var(--text-muted);
 }
 
 .form-error {
   display: block;
-  margin-top: $spacing-1;
-  font-size: $font-size-xs;
-  color: $color-danger;
+  margin-top: a.$spacing-1;
+  font-size: a.$font-size-xs;
+  color: a.$color-danger;
 }
 
 .form-check {
   display: flex;
   align-items: center;
-  margin-bottom: $spacing-2;
-  
+  margin-bottom: a.$spacing-2;
+
   &__input {
-    margin-right: $spacing-2;
+    margin-right: a.$spacing-2;
   }
-  
+
   &__label {
-    font-size: $font-size-sm;
+    font-size: a.$font-size-sm;
   }
 }
 
 .input-group {
   display: flex;
   position: relative;
-  
+
   .form-control {
     flex: 1;
   }
-  
+
   &__prepend,
   &__append {
     display: flex;
     align-items: center;
-    padding: $spacing-2 $spacing-3;
-    font-size: $font-size-base;
+    padding: a.$spacing-2 a.$spacing-3;
+    font-size: a.$font-size-base;
     color: var(--text-muted);
     background-color: rgba(var(--border), 0.3);
     border: 1px solid var(--border);
   }
-  
+
   &__prepend {
     border-right: none;
-    border-top-left-radius: $border-radius;
-    border-bottom-left-radius: $border-radius;
-    
+    border-top-left-radius: a.$border-radius;
+    border-bottom-left-radius: a.$border-radius;
+
     + .form-control {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
   }
-  
+
   &__append {
     border-left: none;
-    border-top-right-radius: $border-radius;
-    border-bottom-right-radius: $border-radius;
-    
+    border-top-right-radius: a.$border-radius;
+    border-bottom-right-radius: a.$border-radius;
+
     .form-control + & {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;

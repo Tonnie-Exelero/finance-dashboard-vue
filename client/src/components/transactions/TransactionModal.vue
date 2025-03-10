@@ -57,7 +57,7 @@
             <input 
               type="number" 
               id="amount"
-              v-model="form.amount"
+              v-model.number="form.amount"
               step="0.01"
               class="form-control"
               :class="{ 'form-control--error': errors.amount }"
@@ -117,7 +117,7 @@
  * @emits close - Emitted when the modal is closed
  * @emits save - Emitted when a transaction is saved
  */
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { XIcon } from 'lucide-vue-next';
 import type { Transaction, TransactionStatus, TransactionCategory } from '@/types';
 
@@ -140,7 +140,7 @@ const emit = defineEmits<{
 }>();
 
 // Form state
-const form = reactive({
+let form = reactive({
   date: new Date().toISOString().split('T')[0],
   description: '',
   category: 'Other' as TransactionCategory,
@@ -148,7 +148,36 @@ const form = reactive({
   status: 'Completed' as TransactionStatus
 });
 
-// Form validation errors
+// Initialize form based on transaction prop
+const initializeForm = (newValue) => {
+  // Always reset first to clear previous state
+  Object.assign(form, {
+    date: new Date().toISOString().split('T')[0],
+    description: '',
+    category: 'Other',
+    amount: 0,
+    status: 'Completed'
+  });
+
+  if (newValue) {
+    // Use optional chaining and nullish coalescing for safer access
+    const t = newValue;
+    const dateValue = t.date ? new Date(t.date) : new Date();
+    
+    form.date = dateValue.toISOString().split('T')[0];
+    form.description = t.description ?? '';
+    form.category = t.category as TransactionCategory ?? 'Other';
+    form.amount = Number(t.amount) || 0;
+    form.status = t.status as TransactionStatus ?? 'Completed';
+  }
+};
+
+// Watch for transaction prop changes
+watch(() => props.transaction, (newVal) => {
+  initializeForm(newVal);
+}, { immediate: true, deep: true });
+
+// Validation and error state
 const errors = reactive({
   date: '',
   description: '',
@@ -157,8 +186,8 @@ const errors = reactive({
   status: ''
 });
 
-// Form submission state
 const isSubmitting = ref(false);
+const isEditing = computed(() => !!props.transaction);
 
 // Available options
 const categories: TransactionCategory[] = [
@@ -177,20 +206,6 @@ const statuses: TransactionStatus[] = [
   'Pending',
   'Failed'
 ];
-
-// Computed properties
-const isEditing = computed(() => !!props.transaction);
-
-// Initialize form with transaction data if editing
-onMounted(() => {
-  if (props.transaction) {
-    form.date = props.transaction.date;
-    form.description = props.transaction.description;
-    form.category = props.transaction.category as TransactionCategory;
-    form.amount = props.transaction.amount;
-    form.status = props.transaction.status;
-  }
-});
 
 // Validate form
 const validateForm = (): boolean => {
@@ -233,16 +248,24 @@ const handleSubmit = () => {
   
   isSubmitting.value = true;
   
-  try {
-    if (props.transaction) {
+	try {
+	const transactionData = {
+      date: form.date,
+      description: form.description.trim(),
+      category: form.category,
+      amount: Number(form.amount),
+      status: form.status
+	};
+	
+    if (props.transaction?.id) {
       // Editing existing transaction
       emit('save', {
         id: props.transaction.id,
-        ...form
+        ...transactionData
       });
     } else {
       // Adding new transaction
-      emit('save', { ...form });
+      emit('save', { ...transactionData });
     }
   } finally {
     isSubmitting.value = false;

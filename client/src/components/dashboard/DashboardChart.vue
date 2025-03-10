@@ -5,10 +5,15 @@
     </div>
     <div class="card__body">
       <component 
+	    v-if="chartData?.labels?.length"
         :is="chartComponent" 
         :chart-data="chartData" 
-        :options="options" 
+        :options="options"
+		:key="chartType"
       />
+	  <div v-else class="chart-error">
+		Chart data is incomplete
+	  </div>
     </div>
   </div>
 </template>
@@ -70,4 +75,9 @@ const chartComponent = computed(() => {
 <style lang="scss" scoped>
 // Component-specific styles can be added here if needed
 // Most styles are in the global SCSS file: src/styles/components/_cards.scss
+.chart-container {
+  position: relative;
+  height: 400px; // Set fixed height
+  width: 100%;
+}
 </style>

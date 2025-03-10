@@ -47,7 +47,7 @@ export function useApolloClient() {
     link: httpLink,
     cache,
     defaultOptions,
-    connectToDevTools: process.env.NODE_ENV !== 'production',
+    connectToDevTools: import.meta.env.VITE_NODE_ENV !== 'production',
   });
 
   // Provide the apollo client to the Vue app

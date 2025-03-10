@@ -1,9 +1,11 @@
+@use "../abstracts" as a;
+
 // Custom utility classes
 .container {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 $spacing-4;
+  padding: 0 a.$spacing-4;
 }
 
 .visually-hidden {
@@ -22,14 +24,14 @@
   display: inline-block;
   width: 24px;
   height: 24px;
-  border: 2px solid rgba($color-primary, 0.3);
+  border: 2px solid rgba(a.$color-primary, 0.3);
   border-radius: 50%;
-  border-top-color: $color-primary;
+  border-top-color: a.$color-primary;
   animation: spin 1s ease-in-out 0.3s;
   border-radius: 50%;
-  border-top-color: $color-primary;
+  border-top-color: a.$color-primary;
   animation: spin 1s ease-in-out infinite;
-  
+
   @keyframes spin {
     to {
       transform: rotate(360deg);
@@ -62,25 +64,25 @@
 }
 
 .gap-2 {
-  gap: $spacing-2;
+  gap: a.$spacing-2;
 }
 
 .gap-4 {
-  gap: $spacing-4;
+  gap: a.$spacing-4;
 }
 
 .mt-2 {
-  margin-top: $spacing-2;
+  margin-top: a.$spacing-2;
 }
 
 .mt-4 {
-  margin-top: $spacing-4;
+  margin-top: a.$spacing-4;
 }
 
 .mb-2 {
-  margin-bottom: $spacing-2;
+  margin-bottom: a.$spacing-2;
 }
 
 .mb-4 {
-  margin-bottom: $spacing-4;
+  margin-bottom: a.$spacing-4;
 }

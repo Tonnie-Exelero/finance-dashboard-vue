@@ -49,7 +49,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     monthlyIncome: 0,
     percentChange: 0
   });
-  
   const revenueData = ref<RevenueData[]>([]);
   const expenseBreakdown = ref<ExpenseBreakdown[]>([]);
   const loading = ref(false);

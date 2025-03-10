@@ -5,12 +5,12 @@
  *
  * @module graphql/resolvers/charts
  */
-import { getClient } from "../../db/index.js";
+import { getClient } from "../../db/index";
 import type {
   RevenueData,
   ExpenseBreakdown,
   GraphQLContext,
-} from "../../types/index.js";
+} from "../../types/index";
 
 /**
  * Chart resolvers

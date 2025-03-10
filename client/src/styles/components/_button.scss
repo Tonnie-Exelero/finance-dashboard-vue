@@ -1,74 +1,76 @@
+@use "../abstracts" as a;
+
 .btn {
-  @include button-base;
-  padding: $spacing-2 $spacing-4;
-  font-size: $font-size-sm;
-  
+  @include a.button-base;
+  padding: a.$spacing-2 a.$spacing-4;
+  font-size: a.$font-size-sm;
+
   &--primary {
-    background-color: $color-primary;
+    background-color: a.$color-primary;
     color: white;
-    border: 1px solid $color-primary;
-    
+    border: 1px solid a.$color-primary;
+
     &:hover:not(:disabled) {
-      background-color: $color-primary-dark;
-      border-color: $color-primary-dark;
+      background-color: a.$color-primary-dark;
+      border-color: a.$color-primary-dark;
     }
   }
-  
+
   &--secondary {
-    background-color: $color-secondary;
+    background-color: a.$color-secondary;
     color: white;
-    border: 1px solid $color-secondary;
-    
+    border: 1px solid a.$color-secondary;
+
     &:hover:not(:disabled) {
-      background-color: $color-secondary-dark;
-      border-color: $color-secondary-dark;
+      background-color: a.$color-secondary-dark;
+      border-color: a.$color-secondary-dark;
     }
   }
-  
+
   &--outline {
     background-color: transparent;
-    color: $color-primary;
-    border: 1px solid $color-primary;
-    
+    color: a.$color-primary;
+    border: 1px solid a.$color-primary;
+
     &:hover:not(:disabled) {
-      background-color: rgba($color-primary, 0.1);
+      background-color: rgba(a.$color-primary, 0.1);
     }
   }
-  
+
   &--danger {
-    background-color: $color-danger;
+    background-color: a.$color-danger;
     color: white;
-    border: 1px solid $color-danger;
-    
+    border: 1px solid a.$color-danger;
+
     &:hover:not(:disabled) {
-      background-color: darken-color($color-danger, 10%);
-      border-color: darken-color($color-danger, 10%);
+      background-color: a.darken-color(a.$color-danger, 10%);
+      border-color: a.darken-color(a.$color-danger, 10%);
     }
   }
-  
+
   &--sm {
-    padding: $spacing-1 $spacing-2;
-    font-size: $font-size-xs;
+    padding: a.$spacing-1 a.$spacing-2;
+    font-size: a.$font-size-xs;
   }
-  
+
   &--lg {
-    padding: $spacing-3 $spacing-6;
-    font-size: $font-size-base;
+    padding: a.$spacing-3 a.$spacing-6;
+    font-size: a.$font-size-base;
   }
-  
+
   &--icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    
+
     svg {
-      margin-right: $spacing-2;
+      margin-right: a.$spacing-2;
     }
   }
-  
+
   &--icon-only {
-    padding: $spacing-2;
-    
+    padding: a.$spacing-2;
+
     svg {
       margin-right: 0;
     }

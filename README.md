@@ -97,7 +97,7 @@ The project follows a modular architecture to ensure maintainability and separat
 
 ### Prerequisites
 
-- Node.js (v16+)
+- Node.js (v20+)
 - Yarn package manager
 - Docker and Docker Compose (optional)
 - PostgreSQL database (if not using Docker)
@@ -118,7 +118,7 @@ yarn install
 3. Set up environment variables:
 ```bash
 DB_HOST=localhost
-DB_PORT=5432
+DB_PORT=5433
 DB_NAME=financial_dashboard
 DB_USER=postgres
 DB_PASSWORD=your_password

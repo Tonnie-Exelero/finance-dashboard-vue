@@ -1,36 +1,38 @@
+@use "../abstracts" as a;
+
 .main {
   max-width: 1280px;
   margin: 0 auto;
-  padding: $spacing-6 $spacing-4;
-  
-  @include respond-to(md) {
-    padding: $spacing-8 $spacing-4;
+  padding: a.$spacing-6 a.$spacing-4;
+
+  @include a.respond-to(md) {
+    padding: a.$spacing-8 a.$spacing-4;
   }
 }
 
 .page-header {
-  margin-bottom: $spacing-6;
-  
+  margin-bottom: a.$spacing-6;
+
   h1 {
-    margin-bottom: $spacing-2;
+    margin-bottom: a.$spacing-2;
   }
-  
+
   &__description {
     color: var(--text-muted);
-    font-size: $font-size-lg;
+    font-size: a.$font-size-lg;
   }
 }
 
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-6;
-  
-  @include respond-to(md) {
+  gap: a.$spacing-6;
+
+  @include a.respond-to(md) {
     grid-template-columns: repeat(2, 1fr);
   }
-  
-  @include respond-to(lg) {
+
+  @include a.respond-to(lg) {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -38,14 +40,14 @@
 .chart-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-6;
-  margin-top: $spacing-8;
-  
-  @include respond-to(lg) {
+  gap: a.$spacing-6;
+  margin-top: a.$spacing-8;
+
+  @include a.respond-to(lg) {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 .transactions-section {
-  margin-top: $spacing-8;
+  margin-top: a.$spacing-8;
 }
