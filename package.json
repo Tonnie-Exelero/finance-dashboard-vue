@@ -13,6 +13,7 @@
     "build": "yarn workspace financial-dashboard-client build && yarn workspace financial-dashboard-server build",
     "start": "yarn workspace financial-dashboard-server start",
     "lint": "yarn workspaces run lint",
+    "format": "yarn workspaces run format",
     "test": "yarn workspaces run test",
     "type-check": "yarn workspace financial-dashboard-client type-check && yarn workspace financial-dashboard-server build --noEmit",
     "prepare": "husky install"
@@ -81,6 +82,6 @@
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix",
-    "*.{js,ts,vue,json,css,md}": "prettier --write"
+    "*.{js,ts,vue,json,css,scss,md}": "prettier --write"
   }
 }

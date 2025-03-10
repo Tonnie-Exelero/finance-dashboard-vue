@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath, URL } from 'node:url';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,9 +14,14 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         additionalData: `
-          @import "@/styles/abstracts/index";
+          @import "@/styles/abstracts/_variables.scss";
+          @import "@/styles/abstracts/_mixins.scss";
+          @import "@/styles/abstracts/_functions.scss";
         `
       }
     }
+  },
+  server: {
+    port: 3000
   }
 });
