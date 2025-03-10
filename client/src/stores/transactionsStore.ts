@@ -9,7 +9,7 @@ import { defineStore } from 'pinia';
 import { ref, computed, watch } from 'vue';
 import { useQuery, useMutation } from '@vue/apollo-composable';
 import { gql } from '@apollo/client/core';
-import type { Transaction } from '@/types';
+import type { Transaction, TransactionInput } from '@/types';
 
 // GraphQL queries and mutations
 const GET_TRANSACTIONS = gql`
@@ -22,6 +22,7 @@ const GET_TRANSACTIONS = gql`
       amount
       status
     }
+    transactionCount
   }
 `;
 
@@ -68,33 +69,28 @@ export const useTransactionsStore = defineStore('transactions', () => {
   
   // Computed properties
   const pageCount = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
-  const paginatedTransactions = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage.value;
-    const end = start + itemsPerPage.value;
-    return transactions.value.slice(start, end);
-  });
+  const paginatedTransactions = computed(() => transactions.value);
+  
+  // Variables for GraphQL query
+  const variables = computed(() => ({
+    limit: itemsPerPage.value,
+    offset: (currentPage.value - 1) * itemsPerPage.value
+  }));
 
   // Fetch transactions using useQuery
-  const {
-    result: transactionsResult,
-    loading: queryLoading,
-    error: queryError,
-    onResult,
-    onError,
-    refetch
-  } = useQuery(GET_TRANSACTIONS, {
-    limit: itemsPerPage,
-    offset: computed(() => (currentPage.value - 1) * itemsPerPage.value),
-  }, {
-    clientId: 'default',
-  });
+  const { result, loading: queryLoading, error: queryError, refetch } = useQuery(
+    GET_TRANSACTIONS,
+    variables,
+    { fetchPolicy: 'cache-and-network' }
+  );
 
   // Watch for changes in the Apollo query result
-  watch(transactionsResult, (newResult) => {
+  watch(result, (newResult) => {
     if (newResult?.transactions) {
       transactions.value = newResult.transactions;
+      totalItems.value = newResult.transactionCount || 0;
     }
-  }, { deep: true });
+  });
 
   watch(queryLoading, (newLoading) => {
     loading.value = newLoading;
@@ -104,12 +100,23 @@ export const useTransactionsStore = defineStore('transactions', () => {
     error.value = newError || null;
   });
   
+  // Mutations
+  const { mutate: addTransactionMutation } = useMutation(ADD_TRANSACTION);
+  const { mutate: updateTransactionMutation } = useMutation(UPDATE_TRANSACTION);
+  const { mutate: deleteTransactionMutation } = useMutation(DELETE_TRANSACTION);
+
   // Actions
   async function fetchTransactions() {
-    await refetch({
-      limit: itemsPerPage.value,
-      offset: (currentPage.value - 1) * itemsPerPage.value
-    });
+    loading.value = true;
+    error.value = null;
+    
+    try {
+      await refetch();
+    } catch (err) {
+      error.value = err instanceof Error ? err : new Error('Unknown error');
+    } finally {
+      loading.value = false;
+    }
   }
   
   async function addTransaction(transaction: Omit<Transaction, 'id'>) {
@@ -117,26 +124,18 @@ export const useTransactionsStore = defineStore('transactions', () => {
     error.value = null;
     
     try {
-      const { mutate, onDone, onError } = useMutation(ADD_TRANSACTION);
-      
-      await mutate({
+      const result = await addTransactionMutation({
         input: transaction
       });
       
-      onDone((result) => {
-        if (result.data) {
-          transactions.value.unshift(result.data.addTransaction);
-          totalItems.value++;
-        }
-        loading.value = false;
-      });
-      
-      onError((err) => {
-        error.value = err;
-        loading.value = false;
-      });
+      if (result?.data?.addTransaction) {
+        // Refetch to update the list and count
+        await fetchTransactions();
+      }
     } catch (err) {
-      error.value = err instanceof Error ? err : new Error('Unknown error');
+      error.value = err instanceof Error ? err : new Error('Failed to add transaction');
+      throw error.value;
+    } finally {
       loading.value = false;
     }
   }
@@ -146,29 +145,22 @@ export const useTransactionsStore = defineStore('transactions', () => {
     error.value = null;
     
     try {
-      const { mutate, onDone, onError } = useMutation(UPDATE_TRANSACTION);
-      
-      await mutate({
+      const result = await updateTransactionMutation({
         id,
         input: transaction
       });
       
-      onDone((result) => {
-        if (result.data) {
-          const index = transactions.value.findIndex(t => t.id === id);
-          if (index !== -1) {
-            transactions.value[index] = result.data.updateTransaction;
-          }
+      if (result?.data?.updateTransaction) {
+        // Update the transaction in the local state
+        const index = transactions.value.findIndex(t => t.id === id);
+        if (index !== -1) {
+          transactions.value[index] = result.data.updateTransaction;
         }
-        loading.value = false;
-      });
-      
-      onError((err) => {
-        error.value = err;
-        loading.value = false;
-      });
+      }
     } catch (err) {
-      error.value = err instanceof Error ? err : new Error('Unknown error');
+      error.value = err instanceof Error ? err : new Error('Failed to update transaction');
+      throw error.value;
+    } finally {
       loading.value = false;
     }
   }
@@ -178,24 +170,16 @@ export const useTransactionsStore = defineStore('transactions', () => {
     error.value = null;
     
     try {
-      const { mutate, onDone, onError } = useMutation(DELETE_TRANSACTION);
+      const result = await deleteTransactionMutation({ id });
       
-      await mutate({ id });
-      
-      onDone((result) => {
-        if (result.data && result.data.deleteTransaction) {
-          transactions.value = transactions.value.filter(t => t.id !== id);
-          totalItems.value--;
-        }
-        loading.value = false;
-      });
-      
-      onError((err) => {
-        error.value = err;
-        loading.value = false;
-      });
+      if (result?.data?.deleteTransaction) {
+        // Refetch to update the list and count
+        await fetchTransactions();
+      }
     } catch (err) {
-      error.value = err instanceof Error ? err : new Error('Unknown error');
+      error.value = err instanceof Error ? err : new Error('Failed to delete transaction');
+      throw error.value;
+    } finally {
       loading.value = false;
     }
   }

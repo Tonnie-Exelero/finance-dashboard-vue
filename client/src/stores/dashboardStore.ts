@@ -27,6 +27,7 @@ const GET_DASHBOARD_DATA = gql`
       totalBalance
       monthlyExpenses
       monthlyIncome
+      percentChange
     }
     revenueData {
       month
@@ -45,7 +46,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const summaryData = ref<SummaryData>({
     totalBalance: 0,
     monthlyExpenses: 0,
-    monthlyIncome: 0
+    monthlyIncome: 0,
+    percentChange: 0
   });
   
   const revenueData = ref<RevenueData[]>([]);
@@ -56,7 +58,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   // Apollo query setup
   const { onResult, onError, refetch } = useQuery(GET_DASHBOARD_DATA, {
-    fetchPolicy: 'cache-and-network', // Consider using cache-and-network for a better UX
+    fetchPolicy: 'cache-and-network',
   });
 
   onResult((result) => {
@@ -78,7 +80,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
     {
       title: 'Total Balance',
       value: formatCurrency(summaryData.value.totalBalance),
-      icon: DollarSign
+      icon: DollarSign,
+      percentChange: summaryData.value.percentChange
     },
     {
       title: 'Monthly Expenses',
