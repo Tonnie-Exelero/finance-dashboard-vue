@@ -9,9 +9,6 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
 
-// Import main SASS file
-import './styles/main.scss';
-
 // Create Pinia instance
 const pinia = createPinia();
 
