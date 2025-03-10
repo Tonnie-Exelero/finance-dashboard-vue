@@ -1,15 +1,17 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="dashboard">
     <AppHeader @toggle-dark-mode="toggleDarkMode" :is-dark-mode="settingsStore.isDarkMode" />
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <main class="dashboard-main">
       <DashboardSummary :summary-cards="dashboardStore.summaryCards" />
       
-      <DashboardCharts 
-        :revenue-chart-data="dashboardStore.revenueChartData" 
-        :expense-chart-data="dashboardStore.expenseChartData"
-        :chart-options="dashboardStore.chartOptions"
-        :doughnut-options="dashboardStore.doughnutOptions"
-      />
+      <div class="chart-grid">
+        <DashboardCharts 
+          :revenue-chart-data="dashboardStore.revenueChartData" 
+          :expense-chart-data="dashboardStore.expenseChartData"
+          :chart-options="dashboardStore.chartOptions"
+          :doughnut-options="dashboardStore.doughnutOptions"
+        />
+      </div>
       
       <TransactionsTable />
     </main>
@@ -66,23 +68,6 @@ onMounted(() => {
 });
 </script>
 
-<style>
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 249, 250, 251;
-}
-
-.dark {
-  --foreground-rgb: 255, 255, 255;
-  --background-rgb: 17, 24, 39;
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background-color: rgb(var(--background-rgb));
-}
+<style lang="scss">
+@import '@/styles/main.scss';
 </style>

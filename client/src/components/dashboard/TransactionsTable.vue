@@ -1,10 +1,10 @@
 <template>
-  <div class="mt-8 bg-white dark:bg-gray-800 shadow rounded-lg">
-    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-      <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Transactions</h3>
+  <div class="table-container">
+    <div class="table-header">
+      <h3 class="table-title">Recent Transactions</h3>
       <button 
         @click="showAddTransactionModal = true"
-        class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        class="btn-primary"
       >
         Add Transaction
       </button>
@@ -12,70 +12,51 @@
     
     <!-- Loading state -->
     <div v-if="transactionsStore.loading" class="p-6 text-center">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-      <p class="mt-2 text-gray-600 dark:text-gray-400">Loading transactions...</p>
+      <div class="spinner"></div>
+      <p class="loading-text mt-2">Loading transactions...</p>
     </div>
     
     <!-- Error state -->
-    <div v-else-if="transactionsStore.error" class="p-6 text-center text-red-600 dark:text-red-400">
-      <p>Error loading transactions. Please try again.</p>
+    <div v-else-if="transactionsStore.error" class="p-6 text-center">
+      <p class="error-text">Error loading transactions. Please try again.</p>
     </div>
     
     <!-- Transactions table -->
-    <div v-else class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-        <thead class="bg-gray-50 dark:bg-gray-700">
+    <div v-else class="table">
+      <table>
+        <thead>
           <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-              Date
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-              Description
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-              Category
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-              Amount
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-              Status
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-              Actions
-            </th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-          <tr v-for="transaction in transactionsStore.paginatedTransactions" :key="transaction.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-              {{ formatDate(transaction.date) }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-              {{ transaction.description }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-              {{ transaction.category }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm" :class="transaction.amount > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+        <tbody>
+          <tr v-for="transaction in transactionsStore.paginatedTransactions" :key="transaction.id">
+            <td>{{ formatDate(transaction.date) }}</td>
+            <td>{{ transaction.description }}</td>
+            <td>{{ transaction.category }}</td>
+            <td :class="transaction.amount > 0 ? 'text-success' : 'text-danger'">
               {{ formatCurrency(transaction.amount) }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" 
-                :class="getStatusClass(transaction.status)">
+            <td>
+              <span :class="getStatusClass(transaction.status)">
                 {{ transaction.status }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+            <td>
               <button 
                 @click="editTransaction(transaction)"
-                class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3"
+                class="btn-ghost mr-3"
               >
                 Edit
               </button>
               <button 
                 @click="confirmDelete(transaction.id)"
-                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                class="btn-ghost text-danger"
               >
                 Delete
               </button>
@@ -86,131 +67,123 @@
     </div>
     
     <!-- Pagination -->
-    <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-      <div class="flex justify-between items-center">
-        <div>
-          <span class="text-sm text-gray-700 dark:text-gray-300">
-            Showing 
-            <span class="font-medium">{{ (transactionsStore.currentPage - 1) * transactionsStore.itemsPerPage + 1 }}</span>
-            to
-            <span class="font-medium">
-              {{ Math.min(transactionsStore.currentPage * transactionsStore.itemsPerPage, transactionsStore.totalItems) }}
-            </span>
-            of
-            <span class="font-medium">{{ transactionsStore.totalItems }}</span>
-            results
-          </span>
-        </div>
-        <div class="flex space-x-2">
-          <button 
-            @click="transactionsStore.setPage(transactionsStore.currentPage - 1)"
-            :disabled="transactionsStore.currentPage === 1"
-            class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Previous
-          </button>
-          <button 
-            @click="transactionsStore.setPage(transactionsStore.currentPage + 1)"
-            :disabled="transactionsStore.currentPage === transactionsStore.pageCount"
-            class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Next
-          </button>
-        </div>
+    <div class="table-footer">
+      <div class="pagination-info">
+        Showing 
+        <span class="font-medium">{{ (transactionsStore.currentPage - 1) * transactionsStore.itemsPerPage + 1 }}</span>
+        to
+        <span class="font-medium">
+          {{ Math.min(transactionsStore.currentPage * transactionsStore.itemsPerPage, transactionsStore.totalItems) }}
+        </span>
+        of
+        <span class="font-medium">{{ transactionsStore.totalItems }}</span>
+        results
+      </div>
+      <div class="table-pagination">
+        <button 
+          @click="transactionsStore.setPage(transactionsStore.currentPage - 1)"
+          :disabled="transactionsStore.currentPage === 1"
+          class="pagination-button"
+        >
+          Previous
+        </button>
+        <button 
+          @click="transactionsStore.setPage(transactionsStore.currentPage + 1)"
+          :disabled="transactionsStore.currentPage === transactionsStore.pageCount"
+          class="pagination-button"
+        >
+          Next
+        </button>
       </div>
     </div>
     
     <!-- Add/Edit Transaction Modal -->
-    <div v-if="showAddTransactionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-          {{ editingTransaction ? 'Edit Transaction' : 'Add Transaction' }}
-        </h3>
+    <div v-if="showAddTransactionModal" class="modal">
+      <div class="modal-overlay" @click="showAddTransactionModal = false"></div>
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3 class="modal-title">
+            {{ editingTransaction ? 'Edit Transaction' : 'Add Transaction' }}
+          </h3>
+        </div>
         
-        <form @submit.prevent="saveTransaction">
-          <div class="space-y-4">
-            <!-- Date -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
-              <input 
-                type="date" 
-                v-model="transactionForm.date"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-                required
-              />
-            </div>
-            
-            <!-- Description -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
-              <input 
-                type="text" 
-                v-model="transactionForm.description"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-                required
-              />
-            </div>
-            
-            <!-- Category -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
-              <select 
-                v-model="transactionForm.category"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-                required
-              >
-                <option value="Income">Income</option>
-                <option value="Housing">Housing</option>
-                <option value="Food">Food</option>
-                <option value="Transportation">Transportation</option>
-                <option value="Utilities">Utilities</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            
-            <!-- Amount -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount</label>
-              <input 
-                type="number" 
-                v-model="transactionForm.amount"
-                step="0.01"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-                required
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Use positive values for income, negative for expenses
-              </p>
-            </div>
-            
-            <!-- Status -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
-              <select 
-                v-model="transactionForm.status"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-                required
-              >
-                <option value="Completed">Completed</option>
-                <option value="Pending">Pending</option>
-                <option value="Failed">Failed</option>
-              </select>
-            </div>
+        <form @submit.prevent="saveTransaction" class="modal-content">
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input 
+              type="date" 
+              v-model="transactionForm.date"
+              class="form-input"
+              required
+            />
           </div>
           
-          <div class="mt-6 flex justify-end space-x-3">
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <input 
+              type="text" 
+              v-model="transactionForm.description"
+              class="form-input"
+              required
+            />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select 
+              v-model="transactionForm.category"
+              class="form-select"
+              required
+            >
+              <option value="Income">Income</option>
+              <option value="Housing">Housing</option>
+              <option value="Food">Food</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Healthcare">Healthcare</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Amount</label>
+            <input 
+              type="number" 
+              v-model="transactionForm.amount"
+              step="0.01"
+              class="form-input"
+              required
+            />
+            <p class="form-helper">
+              Use positive values for income, negative for expenses
+            </p>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select 
+              v-model="transactionForm.status"
+              class="form-select"
+              required
+            >
+              <option value="Completed">Completed</option>
+              <option value="Pending">Pending</option>
+              <option value="Failed">Failed</option>
+            </select>
+          </div>
+          
+          <div class="form-actions">
             <button 
               type="button"
               @click="showAddTransactionModal = false"
-              class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              class="btn-outline"
             >
               Cancel
             </button>
             <button 
               type="submit"
-              class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              class="btn-primary"
             >
               {{ editingTransaction ? 'Update' : 'Add' }}
             </button>
@@ -220,26 +193,31 @@
     </div>
     
     <!-- Delete Confirmation Modal -->
-    <div v-if="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Confirm Delete</h3>
-        <p class="text-gray-700 dark:text-gray-300 mb-6">
-          Are you sure you want to delete this transaction? This action cannot be undone.
-        </p>
-        
-        <div class="flex justify-end space-x-3">
-          <button 
-            @click="showDeleteModal = false"
-            class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-          >
-            Cancel
-          </button>
-          <button 
-            @click="deleteTransaction"
-            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-          >
-            Delete
-          </button>
+    <div v-if="showDeleteModal" class="modal">
+      <div class="modal-overlay" @click="showDeleteModal = false"></div>
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3 class="modal-title">Confirm Delete</h3>
+        </div>
+        <div class="modal-content">
+          <p class="mb-6">
+            Are you sure you want to delete this transaction? This action cannot be undone.
+          </p>
+          
+          <div class="form-actions">
+            <button 
+              @click="showDeleteModal = false"
+              class="btn-outline"
+            >
+              Cancel
+            </button>
+            <button 
+              @click="deleteTransaction"
+              class="btn-danger"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -257,7 +235,7 @@
 import { ref, reactive } from 'vue';
 import { useTransactionsStore } from '@/stores/transactionsStore';
 import { useSettingsStore } from '@/stores/settingsStore';
-import { formatCurrency, getStatusClass } from '@/utils/formatters';
+import { formatCurrency } from '@/utils/formatters';
 import type { Transaction } from '@/types';
 
 // Initialize stores
@@ -288,6 +266,20 @@ const formatDate = (dateString: string): string => {
     day: 'numeric' 
   };
   return date.toLocaleDateString(undefined, options);
+};
+
+// Get status class based on status
+const getStatusClass = (status: string): string => {
+  switch (status) {
+    case 'Completed':
+      return 'status-completed';
+    case 'Pending':
+      return 'status-pending';
+    case 'Failed':
+      return 'status-failed';
+    default:
+      return '';
+  }
 };
 
 // Edit transaction
@@ -356,3 +348,71 @@ const resetForm = () => {
   transactionForm.status = 'Completed';
 };
 </script>
+
+<style lang="scss" scoped>
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: map-get($z-index, 'modal');
+  @include flex-center;
+  padding: map-get($spacing-scale, 4);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+.modal-container {
+  @include theme-color('background-color', 'card');
+  @include border-radius('lg');
+  @include shadow-xl;
+  max-width: 28rem;
+  width: 100%;
+}
+
+.modal-header {
+  @include padding(6);
+  @include theme-color('border-bottom-color', 'border');
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+
+.modal-title {
+  @include font-size('lg');
+  @include font-weight('medium');
+  @include theme-color('color', 'card-foreground');
+}
+
+.modal-content {
+  @include padding(6);
+}
+
+.loading-text {
+  @include font-size('sm');
+  @include theme-color('color', 'muted-foreground');
+}
+
+.error-text {
+  @include font-size('sm');
+  @include theme-color('color', 'danger');
+}
+
+.spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 0.25rem solid rgba(99, 102, 241, 0.2);
+  border-top-color: rgb(99, 102, 241);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
