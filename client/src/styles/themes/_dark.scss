@@ -1,0 +1,11 @@
+/**
+ * Dark Theme
+ * 
+ * Dark theme variables.
+ */
+
+.dark {
+  @each $name, $value in $dark-theme-colors {
+    --color-#{$name}: #{$value};
+  }
+}

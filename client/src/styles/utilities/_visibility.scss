@@ -1,0 +1,128 @@
+/**
+ * Visibility
+ * 
+ * Visibility utility classes.
+ */
+
+.hidden {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
+.inline {
+  display: inline;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.flex {
+  display: flex;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.grid {
+  display: grid;
+}
+
+.inline-grid {
+  display: inline-grid;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-25 {
+  opacity: 0.25;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.opacity-75 {
+  opacity: 0.75;
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+// Responsive visibility
+@each $breakpoint, $width in $breakpoints {
+  @include media-breakpoint-up($breakpoint) {
+    .hidden-#{$breakpoint}-up {
+      display: none;
+    }
+    
+    .block-#{$breakpoint}-up {
+      display: block;
+    }
+    
+    .flex-#{$breakpoint}-up {
+      display: flex;
+    }
+    
+    .grid-#{$breakpoint}-up {
+      display: grid;
+    }
+  }
+  
+  @include media-breakpoint-down($breakpoint) {
+    .hidden-#{$breakpoint}-down {
+      display: none;
+    }
+    
+    .block-#{$breakpoint}-down {
+      display: block;
+    }
+    
+    .flex-#{$breakpoint}-down {
+      display: flex;
+    }
+    
+    .grid-#{$breakpoint}-down {
+      display: grid;
+    }
+  }
+}
+
+// Screen reader only
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}

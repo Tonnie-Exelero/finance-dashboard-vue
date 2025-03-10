@@ -1,0 +1,21 @@
+/**
+ * Main SASS file
+ * 
+ * This is the entry point for all styles in the application.
+ * It imports all other SASS files in the correct order.
+ */
+
+// Base styles
+@import 'base/index';
+
+// Layout styles
+@import 'layout/index';
+
+// Component styles
+@import 'components/index';
+
+// Theme styles
+@import 'themes/index';
+
+// Utility styles
+@import 'utilities/index';

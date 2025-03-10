@@ -1,0 +1,174 @@
+/**
+ * Mixins
+ * 
+ * Reusable SASS mixins for the application.
+ */
+
+// Media query mixin
+@mixin media-breakpoint-up($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (min-width: map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @error "Unknown breakpoint: #{$breakpoint}. Available breakpoints are: #{map-keys($breakpoints)}.";
+  }
+}
+
+@mixin media-breakpoint-down($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (max-width: map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @error "Unknown breakpoint: #{$breakpoint}. Available breakpoints are: #{map-keys($breakpoints)}.";
+  }
+}
+
+// Typography mixins
+@mixin font-size($size) {
+  @if map-has-key($font-size-scale, $size) {
+    font-size: map-get($font-size-scale, $size);
+  } @else {
+    @error "Unknown font size: #{$size}. Available sizes are: #{map-keys($font-size-scale)}.";
+  }
+}
+
+@mixin font-weight($weight) {
+  @if map-has-key($font-weight, $weight) {
+    font-weight: map-get($font-weight, $weight);
+  } @else {
+    @error "Unknown font weight: #{$weight}. Available weights are: #{map-keys($font-weight)}.";
+  }
+}
+
+// Spacing mixins
+@mixin padding($space) {
+  @if map-has-key($spacing-scale, $space) {
+    padding: map-get($spacing-scale, $space);
+  } @else {
+    @error "Unknown spacing value: #{$space}. Available values are: #{map-keys($spacing-scale)}.";
+  }
+}
+
+@mixin padding-x($space) {
+  @if map-has-key($spacing-scale, $space) {
+    padding-left: map-get($spacing-scale, $space);
+    padding-right: map-get($spacing-scale, $space);
+  } @else {
+    @error "Unknown spacing value: #{$space}. Available values are: #{map-keys($spacing-scale)}.";
+  }
+}
+
+@mixin padding-y($space) {
+  @if map-has-key($spacing-scale, $space) {
+    padding-top: map-get($spacing-scale, $space);
+    padding-bottom: map-get($spacing-scale, $space);
+  } @else {
+    @error "Unknown spacing value: #{$space}. Available values are: #{map-keys($spacing-scale)}.";
+  }
+}
+
+@mixin margin($space) {
+  @if map-has-key($spacing-scale, $space) {
+    margin: map-get($spacing-scale, $space);
+  } @else {
+    @error "Unknown spacing value: #{$space}. Available values are: #{map-keys($spacing-scale)}.";
+  }
+}
+
+@mixin margin-x($space) {
+  @if map-has-key($spacing-scale, $space) {
+    margin-left: map-get($spacing-scale, $space);
+    margin-right: map-get($spacing-scale, $space);
+  } @else {
+    @error "Unknown spacing value: #{$space}. Available values are: #{map-keys($spacing-scale)}.";
+  }
+}
+
+@mixin margin-y($space) {
+  @if map-has-key($spacing-scale, $space) {
+    margin-top: map-get($spacing-scale, $space);
+    margin-bottom: map-get($spacing-scale, $space);
+  } @else {
+    @error "Unknown spacing value: #{$space}. Available values are: #{map-keys($spacing-scale)}.";
+  }
+}
+
+// Flexbox mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Border radius mixin
+@mixin border-radius($radius) {
+  @if map-has-key($border-radius, $radius) {
+    border-radius: map-get($border-radius, $radius);
+  } @else {
+    @error "Unknown border radius: #{$radius}. Available values are: #{map-keys($border-radius)}.";
+  }
+}
+
+// Transition mixin
+@mixin transition($property: all, $duration: normal, $timing: ease-in-out) {
+  $duration-value: map-get($transition-duration, $duration);
+  $timing-value: map-get($transition-timing, $timing);
+  
+  @if $duration-value and $timing-value {
+    transition: $property $duration-value $timing-value;
+  } @else {
+    @error "Unknown transition values. Check $transition-duration and $transition-timing maps.";
+  }
+}
+
+// Container mixin
+@mixin container($max-width: 'xl') {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  
+  @if map-has-key($container-max-widths, $max-width) {
+    max-width: map-get($container-max-widths, $max-width);
+  } @else {
+    @error "Unknown container max-width: #{$max-width}. Available values are: #{map-keys($container-max-widths)}.";
+  }
+}
+
+// Shadow mixins
+@mixin shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+@mixin shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+@mixin shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+@mixin shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+@mixin shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+// Theme color mixin
+@mixin theme-color($property, $color-name) {
+  #{$property}: var(--color-#{$color-name});
+}
