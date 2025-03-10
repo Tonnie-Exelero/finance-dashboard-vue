@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-Exelero93!}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: ${DB_NAME:-financial_dashboard}
     ports:
       - "${DB_PORT:-5432}:5432"
@@ -29,7 +29,7 @@ services:
       - DB_PORT=5432
       - DB_NAME=${DB_NAME:-financial_dashboard}
       - DB_USER=${DB_USER:-postgres}
-      - DB_PASSWORD=${DB_PASSWORD:-Exelero93!}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
       - PORT=${PORT:-4000}
       - NODE_ENV=${NODE_ENV:-development}
     ports:

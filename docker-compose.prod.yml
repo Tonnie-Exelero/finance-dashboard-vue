@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-Exelero93!}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: ${DB_NAME:-financial_dashboard}
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -27,7 +27,7 @@ services:
       - DB_PORT=5432
       - DB_NAME=${DB_NAME:-financial_dashboard}
       - DB_USER=${DB_USER:-postgres}
-      - DB_PASSWORD=${DB_PASSWORD:-Exelero93!}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
       - PORT=${PORT:-4000}
       - NODE_ENV=production
     ports:
