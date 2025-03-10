@@ -36,6 +36,7 @@ export async function connectToDatabase(): Promise<pg.Client> {
     const { rows } = await client.query("SELECT COUNT(*) FROM transactions");
     if (parseInt(rows[0].count) === 0) {
       await seedData(client);
+      console.log("Database seeded with initial data");
     }
 
     return client;

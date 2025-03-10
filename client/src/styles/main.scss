@@ -1,21 +1,31 @@
-/**
- * Main SASS file
- * 
- * This is the entry point for all styles in the application.
- * It imports all other SASS files in the correct order.
- */
+// Import Tailwind
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Abstracts
+// Note: These are imported globally in vite.config.ts
+// @import 'abstracts/variables';
+// @import 'abstracts/mixins';
+// @import 'abstracts/functions';
 
 // Base styles
-@import 'base/index';
+@import 'base/reset';
+@import 'base/typography';
 
-// Layout styles
-@import 'layout/index';
+// Components
+@import 'components/button';
+@import 'components/card';
+@import 'components/form';
+@import 'components/table';
+@import 'components/modal';
 
-// Component styles
-@import 'components/index';
+// Layout
+@import 'layout/header';
+@import 'layout/main';
 
-// Theme styles
-@import 'themes/index';
+// Themes
+@import 'themes/dark';
 
-// Utility styles
-@import 'utilities/index';
+// Utilities
+@import 'utilities/custom';

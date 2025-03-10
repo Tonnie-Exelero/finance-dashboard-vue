@@ -22,6 +22,7 @@ export interface SummaryData {
   totalBalance: number;
   monthlyExpenses: number;
   monthlyIncome: number;
+  percentChange: number;
 }
 
 /**
@@ -69,4 +70,12 @@ export interface ExpenseBreakdown {
  */
 export interface GraphQLContext {
   // Add authentication context here if needed
+}
+
+/**
+ * Pagination parameters
+ */
+export interface PaginationParams {
+  limit?: number;
+  offset?: number;
 }

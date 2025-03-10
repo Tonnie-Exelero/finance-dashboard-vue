@@ -1,42 +1,56 @@
-/**
- * Reset
- * 
- * Reset and base styles for the application.
- */
-
+/* Box sizing rules */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
   margin: 0;
-  padding: 0;
 }
 
-html {
-  font-size: 16px;
-  -webkit-text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-}
-
+/* Set core body defaults */
 body {
-  font-family: $font-family-sans;
-  line-height: 1.5;
   min-height: 100vh;
-  @include theme-color('color', 'foreground');
-  @include theme-color('background-color', 'background');
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+  font-family: $font-family-sans;
 }
 
+/* Remove list styles on ul, ol elements */
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
 img,
-picture,
-video,
-canvas,
-svg {
-  display: block;
+picture {
   max-width: 100%;
+  display: block;
 }
 
+/* Inherit fonts for inputs and buttons */
 input,
 button,
 textarea,
@@ -44,33 +58,29 @@ select {
   font: inherit;
 }
 
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  overflow-wrap: break-word;
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+/* Set core theme variables */
+:root {
+  --background: #{$light-background};
+  --text: #{$light-text};
+  --text-muted: #{$light-text-muted};
+  --border: #{$light-border};
+  --card-bg: #{$light-card-bg};
 }
 
-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-ul,
-ol {
-  list-style: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
+.dark {
+  --background: #{$dark-background};
+  --text: #{$dark-text};
+  --text-muted: #{$dark-text-muted};
+  --border: #{$dark-border};
+  --card-bg: #{$dark-card-bg};
 }

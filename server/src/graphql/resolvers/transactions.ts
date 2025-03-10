@@ -10,6 +10,7 @@ import type {
   Transaction,
   TransactionInput,
   GraphQLContext,
+  PaginationParams,
 } from "../../types/index.js";
 
 /**
@@ -22,7 +23,7 @@ export const transactionResolvers = {
      */
     transactions: async (
       _: any,
-      { limit = 10, offset = 0 }: { limit?: number; offset?: number },
+      { limit = 10, offset = 0 }: PaginationParams,
       _context: GraphQLContext
     ): Promise<Transaction[]> => {
       try {
@@ -45,6 +46,24 @@ export const transactionResolvers = {
         throw new Error("Failed to fetch transactions");
       }
     },
+
+    /**
+     * Get total count of transactions
+     */
+    transactionCount: async (
+      _: any,
+      __: any,
+      _context: GraphQLContext
+    ): Promise<number> => {
+      try {
+        const client = getClient();
+        const result = await client.query("SELECT COUNT(*) FROM transactions");
+        return parseInt(result.rows[0].count);
+      } catch (error) {
+        console.error("Error counting transactions:", error);
+        throw new Error("Failed to count transactions");
+      }
+    },
   },
 
   Mutation: {
@@ -62,8 +81,6 @@ export const transactionResolvers = {
 
         const result = await client.query(
           `INSERT INTO transactions (date, description, category, amount, status) 
-           VALUES ($1, $2, $3, $4, $5) 
-           RETURNING  category, amount, status) 
            VALUES ($1, $2, $3, $4, $5) 
            RETURNING *`,
           [date, description, category, amount, status]

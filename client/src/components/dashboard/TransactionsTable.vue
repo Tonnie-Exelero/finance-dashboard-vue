@@ -1,226 +1,142 @@
 <template>
-  <div class="table-container">
-    <div class="table-header">
-      <h3 class="table-title">Recent Transactions</h3>
+	<div>
+  <div class="card">
+    <div class="card__header">
+      <h3>Recent Transactions</h3>
       <button 
         @click="showAddTransactionModal = true"
-        class="btn-primary"
+        class="btn btn--primary"
       >
         Add Transaction
       </button>
     </div>
     
-    <!-- Loading state -->
-    <div v-if="transactionsStore.loading" class="p-6 text-center">
-      <div class="spinner"></div>
-      <p class="loading-text mt-2">Loading transactions...</p>
-    </div>
-    
-    <!-- Error state -->
-    <div v-else-if="transactionsStore.error" class="p-6 text-center">
-      <p class="error-text">Error loading transactions. Please try again.</p>
-    </div>
-    
-    <!-- Transactions table -->
-    <div v-else class="table">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="transaction in transactionsStore.paginatedTransactions" :key="transaction.id">
-            <td>{{ formatDate(transaction.date) }}</td>
-            <td>{{ transaction.description }}</td>
-            <td>{{ transaction.category }}</td>
-            <td :class="transaction.amount > 0 ? 'text-success' : 'text-danger'">
-              {{ formatCurrency(transaction.amount) }}
-            </td>
-            <td>
-              <span :class="getStatusClass(transaction.status)">
-                {{ transaction.status }}
-              </span>
-            </td>
-            <td>
-              <button 
-                @click="editTransaction(transaction)"
-                class="btn-ghost mr-3"
-              >
-                Edit
-              </button>
-              <button 
-                @click="confirmDelete(transaction.id)"
-                class="btn-ghost text-danger"
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    
-    <!-- Pagination -->
-    <div class="table-footer">
-      <div class="pagination-info">
-        Showing 
-        <span class="font-medium">{{ (transactionsStore.currentPage - 1) * transactionsStore.itemsPerPage + 1 }}</span>
-        to
-        <span class="font-medium">
-          {{ Math.min(transactionsStore.currentPage * transactionsStore.itemsPerPage, transactionsStore.totalItems) }}
-        </span>
-        of
-        <span class="font-medium">{{ transactionsStore.totalItems }}</span>
-        results
+    <div class="card__body">
+      <!-- Loading state -->
+      <div v-if="transactionsStore.loading" class="text-center py-8">
+        <div class="loading-spinner"></div>
+        <p class="mt-4 text-muted">Loading transactions...</p>
       </div>
-      <div class="table-pagination">
+      
+      <!-- Error state -->
+      <div v-else-if="transactionsStore.error" class="text-center py-8 text-danger">
+        <AlertCircleIcon size="32" />
+        <p class="mt-4">Error loading transactions. Please try again.</p>
+      </div>
+      
+      <!-- Empty state -->
+      <div v-else-if="transactionsStore.transactions.length === 0" class="text-center py-8">
+        <InboxIcon size="32" class="text-muted" />
+        <p class="mt-4 text-muted">No transactions found.</p>
         <button 
-          @click="transactionsStore.setPage(transactionsStore.currentPage - 1)"
-          :disabled="transactionsStore.currentPage === 1"
-          class="pagination-button"
+          @click="showAddTransactionModal = true"
+          class="btn btn--primary mt-4"
         >
-          Previous
-        </button>
-        <button 
-          @click="transactionsStore.setPage(transactionsStore.currentPage + 1)"
-          :disabled="transactionsStore.currentPage === transactionsStore.pageCount"
-          class="pagination-button"
-        >
-          Next
+          Add Your First Transaction
         </button>
       </div>
-    </div>
-    
-    <!-- Add/Edit Transaction Modal -->
-    <div v-if="showAddTransactionModal" class="modal">
-      <div class="modal-overlay" @click="showAddTransactionModal = false"></div>
-      <div class="modal-container">
-        <div class="modal-header">
-          <h3 class="modal-title">
-            {{ editingTransaction ? 'Edit Transaction' : 'Add Transaction' }}
-          </h3>
-        </div>
-        
-        <form @submit.prevent="saveTransaction" class="modal-content">
-          <div class="form-group">
-            <label class="form-label">Date</label>
-            <input 
-              type="date" 
-              v-model="transactionForm.date"
-              class="form-input"
-              required
-            />
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">Description</label>
-            <input 
-              type="text" 
-              v-model="transactionForm.description"
-              class="form-input"
-              required
-            />
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">Category</label>
-            <select 
-              v-model="transactionForm.category"
-              class="form-select"
-              required
-            >
-              <option value="Income">Income</option>
-              <option value="Housing">Housing</option>
-              <option value="Food">Food</option>
-              <option value="Transportation">Transportation</option>
-              <option value="Utilities">Utilities</option>
-              <option value="Entertainment">Entertainment</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">Amount</label>
-            <input 
-              type="number" 
-              v-model="transactionForm.amount"
-              step="0.01"
-              class="form-input"
-              required
-            />
-            <p class="form-helper">
-              Use positive values for income, negative for expenses
-            </p>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">Status</label>
-            <select 
-              v-model="transactionForm.status"
-              class="form-select"
-              required
-            >
-              <option value="Completed">Completed</option>
-              <option value="Pending">Pending</option>
-              <option value="Failed">Failed</option>
-            </select>
-          </div>
-          
-          <div class="form-actions">
-            <button 
-              type="button"
-              @click="showAddTransactionModal = false"
-              class="btn-outline"
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit"
-              class="btn-primary"
-            >
-              {{ editingTransaction ? 'Update' : 'Add' }}
-            </button>
-          </div>
-        </form>
+      
+      <!-- Transactions table -->
+      <div v-else class="table-container">
+        <table class="table table--striped">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="transaction in transactionsStore.paginatedTransactions" :key="transaction.id">
+              <td>{{ formatDate(transaction.date) }}</td>
+              <td>{{ transaction.description }}</td>
+              <td>{{ transaction.category }}</td>
+              <td :class="transaction.amount > 0 ? 'text-success' : 'text-danger'">
+                {{ formatCurrency(transaction.amount) }}
+              </td>
+              <td>
+                <span 
+                  class="status-badge"
+                  :class="`status-badge--${transaction.status.toLowerCase()}`"
+                >
+                  {{ transaction.status }}
+                </span>
+              </td>
+              <td>
+                <div class="table__actions">
+                  <button 
+                    @click="editTransaction(transaction)"
+                    class="btn btn--sm btn--outline"
+                  >
+                    Edit
+                  </button>
+                  <button 
+                    @click="confirmDelete(transaction.id)"
+                    class="btn btn--sm btn--danger"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </div>
-    
-    <!-- Delete Confirmation Modal -->
-    <div v-if="showDeleteModal" class="modal">
-      <div class="modal-overlay" @click="showDeleteModal = false"></div>
-      <div class="modal-container">
-        <div class="modal-header">
-          <h3 class="modal-title">Confirm Delete</h3>
+      
+      <!-- Pagination -->
+      <div class="pagination">
+        <div class="pagination__info">
+          Showing 
+          <span class="font-medium">{{ (transactionsStore.currentPage - 1) * transactionsStore.itemsPerPage + 1 }}</span>
+          to
+          <span class="font-medium">
+            {{ Math.min(transactionsStore.currentPage * transactionsStore.itemsPerPage, transactionsStore.totalItems) }}
+          </span>
+          of
+          <span class="font-medium">{{ transactionsStore.totalItems }}</span>
+          results
         </div>
-        <div class="modal-content">
-          <p class="mb-6">
-            Are you sure you want to delete this transaction? This action cannot be undone.
-          </p>
-          
-          <div class="form-actions">
-            <button 
-              @click="showDeleteModal = false"
-              class="btn-outline"
-            >
-              Cancel
-            </button>
-            <button 
-              @click="deleteTransaction"
-              class="btn-danger"
-            >
-              Delete
-            </button>
-          </div>
+        <div class="pagination__controls">
+          <button 
+            @click="transactionsStore.setPage(transactionsStore.currentPage - 1)"
+            :disabled="transactionsStore.currentPage === 1"
+            class="pagination__button"
+          >
+            Previous
+          </button>
+          <button 
+            @click="transactionsStore.setPage(transactionsStore.currentPage + 1)"
+            :disabled="transactionsStore.currentPage === transactionsStore.pageCount"
+            class="pagination__button"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
+  </div>
+  
+  <!-- Add/Edit Transaction Modal -->
+  <TransactionModal
+    v-if="showAddTransactionModal"
+    :transaction="editingTransaction"
+    @close="closeTransactionModal"
+    @save="saveTransaction"
+  />
+  
+  <!-- Delete Confirmation Modal -->
+  <ConfirmationModal
+    v-if="showDeleteModal"
+    title="Confirm Delete"
+    message="Are you sure you want to delete this transaction? This action cannot be undone."
+    confirm-text="Delete"
+    confirm-variant="danger"
+    @confirm="deleteTransaction"
+    @cancel="showDeleteModal = false"
+  />
   </div>
 </template>
 
@@ -232,10 +148,13 @@
  * 
  * @component
  */
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
+import { AlertCircleIcon, InboxIcon } from 'lucide-vue-next';
 import { useTransactionsStore } from '@/stores/transactionsStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { formatCurrency } from '@/utils/formatters';
+import TransactionModal from '@/components/transactions/TransactionModal.vue';
+import ConfirmationModal from '@/components/shared/ConfirmationModal.vue';
 import type { Transaction } from '@/types';
 
 // Initialize stores
@@ -248,15 +167,6 @@ const showDeleteModal = ref(false);
 const editingTransaction = ref<Transaction | null>(null);
 const transactionToDeleteId = ref<string | null>(null);
 
-// Transaction form
-const transactionForm = reactive({
-  date: new Date().toISOString().split('T')[0],
-  description: '',
-  category: 'Other',
-  amount: 0,
-  status: 'Completed'
-});
-
 // Format date based on user settings
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
@@ -268,59 +178,39 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString(undefined, options);
 };
 
-// Get status class based on status
-const getStatusClass = (status: string): string => {
-  switch (status) {
-    case 'Completed':
-      return 'status-completed';
-    case 'Pending':
-      return 'status-pending';
-    case 'Failed':
-      return 'status-failed';
-    default:
-      return '';
-  }
-};
-
 // Edit transaction
 const editTransaction = (transaction: Transaction) => {
-  editingTransaction.value = transaction;
-  transactionForm.date = transaction.date;
-  transactionForm.description = transaction.description;
-  transactionForm.category = transaction.category;
-  transactionForm.amount = transaction.amount;
-  transactionForm.status = transaction.status;
+  editingTransaction.value = { ...transaction };
   showAddTransactionModal.value = true;
 };
 
+// Close transaction modal
+const closeTransactionModal = () => {
+  showAddTransactionModal.value = false;
+  editingTransaction.value = null;
+};
+
 // Save transaction (add or update)
-const saveTransaction = async () => {
-  if (editingTransaction.value) {
+const saveTransaction = async (transaction: Transaction | Omit<Transaction, 'id'>) => {
+  if ('id' in transaction) {
     // Update existing transaction
     await transactionsStore.updateTransaction(
-      editingTransaction.value.id,
+      transaction.id,
       {
-        date: transactionForm.date,
-        description: transactionForm.description,
-        category: transactionForm.category,
-        amount: transactionForm.amount,
-        status: transactionForm.status
+        date: transaction.date,
+        description: transaction.description,
+        category: transaction.category,
+        amount: transaction.amount,
+        status: transaction.status
       }
     );
   } else {
     // Add new transaction
-    await transactionsStore.addTransaction({
-      date: transactionForm.date,
-      description: transactionForm.description,
-      category: transactionForm.category,
-      amount: transactionForm.amount,
-      status: transactionForm.status
-    });
+    await transactionsStore.addTransaction(transaction);
   }
   
-  // Reset form and close modal
-  resetForm();
-  showAddTransactionModal.value = false;
+  // Close modal
+  closeTransactionModal();
 };
 
 // Confirm delete
@@ -337,82 +227,9 @@ const deleteTransaction = async () => {
     showDeleteModal.value = false;
   }
 };
-
-// Reset form
-const resetForm = () => {
-  editingTransaction.value = null;
-  transactionForm.date = new Date().toISOString().split('T')[0];
-  transactionForm.description = '';
-  transactionForm.category = 'Other';
-  transactionForm.amount = 0;
-  transactionForm.status = 'Completed';
-};
 </script>
 
 <style lang="scss" scoped>
-.modal {
-  position: fixed;
-  inset: 0;
-  z-index: map-get($z-index, 'modal');
-  @include flex-center;
-  padding: map-get($spacing-scale, 4);
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: -1;
-}
-
-.modal-container {
-  @include theme-color('background-color', 'card');
-  @include border-radius('lg');
-  @include shadow-xl;
-  max-width: 28rem;
-  width: 100%;
-}
-
-.modal-header {
-  @include padding(6);
-  @include theme-color('border-bottom-color', 'border');
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-}
-
-.modal-title {
-  @include font-size('lg');
-  @include font-weight('medium');
-  @include theme-color('color', 'card-foreground');
-}
-
-.modal-content {
-  @include padding(6);
-}
-
-.loading-text {
-  @include font-size('sm');
-  @include theme-color('color', 'muted-foreground');
-}
-
-.error-text {
-  @include font-size('sm');
-  @include theme-color('color', 'danger');
-}
-
-.spinner {
-  display: inline-block;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  border: 0.25rem solid rgba(99, 102, 241, 0.2);
-  border-top-color: rgb(99, 102, 241);
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+// Component-specific styles can be added here if needed
+// Most styles are in the global SCSS files
 </style>

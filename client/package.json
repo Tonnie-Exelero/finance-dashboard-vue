@@ -2,6 +2,7 @@
   "name": "financial-dashboard-client",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -38,6 +39,7 @@
     "postcss": "^8.4.32",
     "prettier": "^3.1.1",
     "sass": "^1.69.5",
+    "tailwindcss": "^3.4.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
     "vitest": "^1.1.0",

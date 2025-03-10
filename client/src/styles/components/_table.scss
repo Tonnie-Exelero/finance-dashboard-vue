@@ -1,0 +1,112 @@
+.table-container {
+  overflow-x: auto;
+  @include custom-scrollbar;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: $spacing-3 $spacing-4;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  th {
+    font-weight: $font-weight-medium;
+    color: var(--text-muted);
+    font-size: $font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  td {
+    font-size: $font-size-sm;
+    color: var(--text);
+  }
+  
+  tbody tr {
+    transition: $transition-base;
+    
+    &:hover {
+      background-color: rgba(var(--border), 0.3);
+    }
+  }
+  
+  &--striped {
+    tbody tr:nth-child(odd) {
+      background-color: rgba(var(--border), 0.1);
+      
+      &:hover {
+        background-color: rgba(var(--border), 0.3);
+      }
+    }
+  }
+  
+  &--bordered {
+    th, td {
+      border: 1px solid var(--border);
+    }
+  }
+  
+  &__actions {
+    display: flex;
+    gap: $spacing-2;
+  }
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-1 $spacing-2;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  
+  &--completed {
+    @include status-badge($color-success);
+  }
+  
+  &--pending {
+    @include status-badge($color-warning);
+  }
+  
+  &--failed {
+    @include status-badge($color-danger);
+  }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-4 0;
+  
+  &__info {
+    font-size: $font-size-sm;
+    color: var(--text-muted);
+  }
+  
+  &__controls {
+    display: flex;
+    gap: $spacing-2;
+  }
+  
+  &__button {
+    @include button-base;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    
+    &:hover:not(:disabled) {
+      background-color: rgba(var(--border), 0.3);
+    }
+    
+    &:disabled {
+      color: var(--text-muted);
+    }
+  }
+}

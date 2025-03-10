@@ -8,6 +8,7 @@
     "dev": "nodemon --exec ts-node --esm src/server.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts --fix --ignore-path .gitignore",
+    "format": "prettier --write src/",
     "test": "jest"
   },
   "dependencies": {

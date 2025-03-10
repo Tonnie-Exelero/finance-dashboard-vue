@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: financial-dashboard-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-financial_dashboard}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - financial-dashboard-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: financial-dashboard-server
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=localhost
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-financial_dashboard}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PORT=${PORT:-4000}
+      - NODE_ENV=${NODE_ENV:-development}
+    ports:
+      - "${PORT:-4000}:4000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    networks:
+      - financial-dashboard-network
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: financial-dashboard-client
+    restart: unless-stopped
+    depends_on:
+      - server
+    environment:
+      - VITE_API_URL=http://localhost:${PORT:-4000}/graphql
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    networks:
+      - financial-dashboard-network
+
+networks:
+  financial-dashboard-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
