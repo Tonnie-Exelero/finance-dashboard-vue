@@ -1,0 +1,71 @@
+// Convert pixels to rem
+@function rem($pixels, $context: 16) {
+  @return ($pixels / $context) * 1rem;
+}
+
+// Convert pixels to em
+@function em($pixels, $context: 16) {
+  @return ($pixels / $context) * 1em;
+}
+
+// Get color from chart colors map
+@function chart-color($name) {
+  @return map-get($chart-colors, $name);
+}
+
+// Get a color with opacity
+@function color-with-opacity($color, $opacity) {
+  @return rgba($color, $opacity);
+}
+
+// Lighten a color by a percentage
+@function lighten-color($color, $percentage) {
+  @return mix(white, $color, $percentage);
+}
+
+// Darken a color by a percentage
+@function darken-color($color, $percentage) {
+  @return mix(black, $color, $percentage);
+}
+
+// Get a contrasting text color (black or white) based on background color
+@function contrast-color($color) {
+  $luminance: (0.299 * red($color) + 0.587 * green($color) + 0.114 * blue($color)) / 255;
+  @return if($luminance > 0.5, $color-gray-900, white);
+}
+
+// Z-index function to maintain consistent layers
+@function z-index($layer) {
+  $z-layers: (
+    dropdown: $z-index-dropdown,
+    sticky: $z-index-sticky,
+    fixed: $z-index-fixed,
+    modal-backdrop: $z-index-modal-backdrop,
+    modal: $z-index-modal,
+    popover: $z-index-popover,
+    tooltip: $z-index-tooltip
+  );
+  
+  @return map-get($z-layers, $layer);
+}
+
+// Get a spacing value
+@function spacing($key) {
+  $spacings: (
+    0: $spacing-0,
+    1: $spacing-1,
+    2: $spacing-2,
+    3: $spacing-3,
+    4: $spacing-4,
+    5: $spacing-5,
+    6: $spacing-6,
+    8: $spacing-8,
+    10: $spacing-10,
+    12: $spacing-12,
+    16: $spacing-16,
+    20: $spacing-20,
+    24: $spacing-24
+  );
+  
+  @return map-get($spacings, $key);
+}

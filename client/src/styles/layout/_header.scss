@@ -1,0 +1,53 @@
+.header {
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  padding: $spacing-4 0;
+  
+  &__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 $spacing-4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  &__logo {
+    display: flex;
+    align-items: center;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: var(--text);
+    
+    svg {
+      margin-right: $spacing-2;
+      color: $color-primary;
+    }
+  }
+  
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+  }
+  
+  &__theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: $spacing-2;
+    border-radius: $border-radius;
+    transition: $transition-base;
+    
+    &:hover {
+      background-color: rgba(var(--border), 0.3);
+      color: var(--text);
+    }
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}

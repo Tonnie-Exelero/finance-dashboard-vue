@@ -1,0 +1,112 @@
+.card {
+  @include card;
+  margin-bottom: $spacing-6;
+  
+  &__header {
+    padding: $spacing-4 $spacing-6;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    h3 {
+      margin-bottom: 0;
+    }
+  }
+  
+  &__body {
+    padding: $spacing-6;
+  }
+  
+  &__footer {
+    padding: $spacing-4 $spacing-6;
+    border-top: 1px solid var(--border);
+  }
+  
+  &--summary {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    
+    .card__body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+  
+  &--chart {
+    height: 100%;
+    
+    .card__body {
+      padding: $spacing-4;
+      height: 300px;
+      
+      @include respond-to(md) {
+        height: 350px;
+      }
+    }
+  }
+}
+
+.summary-card {
+  @include card;
+  padding: $spacing-4;
+  display: flex;
+  align-items: center;
+  
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: $border-radius;
+    background-color: rgba($color-primary, 0.1);
+    color: $color-primary;
+    margin-right: $spacing-4;
+    
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  
+  &__content {
+    flex: 1;
+  }
+  
+  &__title {
+    font-size: $font-size-sm;
+    color: var(--text-muted);
+    margin-bottom: $spacing-1;
+  }
+  
+  &__value {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: var(--text);
+  }
+  
+  &__footer {
+    margin-top: $spacing-2;
+    font-size: $font-size-xs;
+    display: flex;
+    align-items: center;
+    
+    &--positive {
+      color: $color-success;
+    }
+    
+    &--negative {
+      color: $color-danger;
+    }
+    
+    svg {
+      width: 16px;
+      height: 16px;
+      margin-right: $spacing-1;
+    }
+  }
+}
