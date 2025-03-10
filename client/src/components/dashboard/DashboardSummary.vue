@@ -1,25 +1,26 @@
 <template>
-  <div class="dashboard-summary">
-    <!-- Summary Cards -->
-    <div v-for="(card, index) in summaryCards" :key="index" class="summary-card">
-      <div class="summary-card-content">
-        <div class="summary-card-icon">
+  <section>
+    <div class="dashboard-grid">
+      <div v-for="(card, index) in summaryCards" :key="index" class="summary-card">
+        <div class="summary-card__icon">
           <component :is="card.icon" />
         </div>
-        <div class="summary-card-info">
-          <div class="summary-card-title">
-            {{ card.title }}
-          </div>
-          <div class="summary-card-value">
-            {{ card.value }}
+        <div class="summary-card__content">
+          <div class="summary-card__title">{{ card.title }}</div>
+          <div class="summary-card__value">{{ card.value }}</div>
+          <div 
+            v-if="card.percentChange !== undefined"
+            class="summary-card__footer"
+            :class="card.percentChange >= 0 ? 'summary-card__footer--positive' : 'summary-card__footer--negative'"
+          >
+            <TrendingUpIcon v-if="card.percentChange >= 0" />
+            <TrendingDownIcon v-else />
+            <span>{{ Math.abs(card.percentChange) }}% from last month</span>
           </div>
         </div>
       </div>
-      <div class="summary-card-footer">
-        <a href="#">View details</a>
-      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -30,6 +31,7 @@
  * 
  * @component
  */
+import { TrendingUpIcon, TrendingDownIcon } from 'lucide-vue-next';
 import type { SummaryCard } from '@/types';
 
 defineProps<{
@@ -39,3 +41,8 @@ defineProps<{
   summaryCards: SummaryCard[];
 }>();
 </script>
+
+<style lang="scss" scoped>
+// Component-specific styles can be added here if needed
+// Most styles are in the global SCSS file: src/styles/components/_cards.scss
+</style>

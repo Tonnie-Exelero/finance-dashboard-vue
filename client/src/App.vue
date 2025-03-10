@@ -1,19 +1,28 @@
 <template>
-  <div class="dashboard">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <AppHeader @toggle-dark-mode="toggleDarkMode" :is-dark-mode="settingsStore.isDarkMode" />
-    <main class="dashboard-main">
+    <main class="main">
       <DashboardSummary :summary-cards="dashboardStore.summaryCards" />
       
       <div class="chart-grid">
-        <DashboardCharts 
-          :revenue-chart-data="dashboardStore.revenueChartData" 
-          :expense-chart-data="dashboardStore.expenseChartData"
-          :chart-options="dashboardStore.chartOptions"
-          :doughnut-options="dashboardStore.doughnutOptions"
+        <DashboardChart 
+          title="Revenue Trend" 
+          :chart-data="dashboardStore.revenueChartData" 
+          :options="dashboardStore.chartOptions"
+          chart-type="line"
+        />
+        
+        <DashboardChart 
+          title="Expense Breakdown" 
+          :chart-data="dashboardStore.expenseChartData"
+          :options="dashboardStore.doughnutOptions"
+          chart-type="doughnut"
         />
       </div>
       
-      <TransactionsTable />
+      <div class="transactions-section">
+        <TransactionsTable />
+      </div>
     </main>
   </div>
 </template>
@@ -25,7 +34,7 @@
  * This is the root component of the Financial Dashboard application.
  * It initializes the stores and serves as the container for all dashboard components.
  * 
- * @author Your Team
+ * @author Financial Dashboard Team
  * @version 1.0.0
  */
 import { onMounted } from 'vue';
@@ -37,7 +46,7 @@ import { useSettingsStore } from '@/stores/settingsStore';
 // Components
 import AppHeader from '@/components/layout/AppHeader.vue';
 import DashboardSummary from '@/components/dashboard/DashboardSummary.vue';
-import DashboardCharts from '@/components/dashboard/DashboardCharts.vue';
+import DashboardChart from '@/components/dashboard/DashboardChart.vue';
 import TransactionsTable from '@/components/dashboard/TransactionsTable.vue';
 
 // Initialize Apollo client
