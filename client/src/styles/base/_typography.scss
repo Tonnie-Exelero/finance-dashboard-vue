@@ -1,0 +1,154 @@
+/**
+ * Typography
+ * 
+ * Typography styles for the application.
+ */
+
+h1, .h1 {
+  @include font-size('4xl');
+  @include font-weight('bold');
+  line-height: 1.2;
+  margin-bottom: map-get($spacing-scale, 4);
+}
+
+h2, .h2 {
+  @include font-size('3xl');
+  @include font-weight('bold');
+  line-height: 1.2;
+  margin-bottom: map-get($spacing-scale, 3);
+}
+
+h3, .h3 {
+  @include font-size('2xl');
+  @include font-weight('semibold');
+  line-height: 1.3;
+  margin-bottom: map-get($spacing-scale, 2);
+}
+
+h4, .h4 {
+  @include font-size('xl');
+  @include font-weight('semibold');
+  line-height: 1.4;
+  margin-bottom: map-get($spacing-scale, 2);
+}
+
+h5, .h5 {
+  @include font-size('lg');
+  @include font-weight('semibold');
+  line-height: 1.4;
+  margin-bottom: map-get($spacing-scale, 1);
+}
+
+h6, .h6 {
+  @include font-size('base');
+  @include font-weight('semibold');
+  line-height: 1.5;
+  margin-bottom: map-get($spacing-scale, 1);
+}
+
+p {
+  @include font-size('base');
+  margin-bottom: map-get($spacing-scale, 4);
+}
+
+.text-xs {
+  @include font-size('xs');
+}
+
+.text-sm {
+  @include font-size('sm');
+}
+
+.text-base {
+  @include font-size('base');
+}
+
+.text-lg {
+  @include font-size('lg');
+}
+
+.text-xl {
+  @include font-size('xl');
+}
+
+.font-thin {
+  @include font-weight('thin');
+}
+
+.font-light {
+  @include font-weight('light');
+}
+
+.font-normal {
+  @include font-weight('normal');
+}
+
+.font-medium {
+  @include font-weight('medium');
+}
+
+.font-semibold {
+  @include font-weight('semibold');
+}
+
+.font-bold {
+  @include font-weight('bold');
+}
+
+.font-extrabold {
+  @include font-weight('extrabold');
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.line-clamp-1,
+.line-clamp-2,
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-1 {
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  -webkit-line-clamp: 3;
+}
