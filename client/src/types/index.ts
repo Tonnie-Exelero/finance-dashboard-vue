@@ -11,6 +11,7 @@ export interface SummaryData {
   totalBalance: number;
   monthlyExpenses: number;
   monthlyIncome: number;
+  percentChange?: number;
 }
 
 /**
@@ -22,8 +23,37 @@ export interface Transaction {
   description: string;
   category: string;
   amount: number;
-  status: string;
+  status: TransactionStatus;
 }
+
+/**
+ * Transaction input for mutations
+ */
+export interface TransactionInput {
+  date: string;
+  description: string;
+  category: string;
+  amount: number;
+  status: TransactionStatus;
+}
+
+/**
+ * Transaction status
+ */
+export type TransactionStatus = 'Completed' | 'Pending' | 'Failed';
+
+/**
+ * Transaction category
+ */
+export type TransactionCategory = 
+  | 'Income' 
+  | 'Housing' 
+  | 'Food' 
+  | 'Transportation' 
+  | 'Utilities' 
+  | 'Entertainment' 
+  | 'Healthcare' 
+  | 'Other';
 
 /**
  * Revenue data for charts
@@ -49,6 +79,7 @@ export interface SummaryCard {
   title: string;
   value: string;
   icon: any; // Component type
+  percentChange?: number;
 }
 
 /**
@@ -103,6 +134,14 @@ export interface ChartOptions {
       };
     };
   };
+}
+
+/**
+ * Pagination parameters
+ */
+export interface PaginationParams {
+  page: number;
+  limit: number;
 }
 
 /**
