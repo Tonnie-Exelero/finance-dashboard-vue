@@ -1,11 +1,11 @@
 /**
  * Formatter Utility Functions
- * 
+ *
  * Provides utility functions for formatting data.
- * 
+ *
  * @module utils/formatters
  */
-import { useSettingsStore } from '@/stores/settingsStore';
+import { useSettingsStore } from "@/stores/settingsStore";
 
 /**
  * Format a number as currency
@@ -16,13 +16,13 @@ import { useSettingsStore } from '@/stores/settingsStore';
 export function formatCurrency(value: number, currencyCode?: string): string {
   const settingsStore = useSettingsStore();
   const currency = currencyCode || settingsStore.currencyCode;
-  
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
     currency,
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(value);
+    maximumFractionDigits: 2,
+  }).format(value || 0);
 }
 
 /**
@@ -32,25 +32,29 @@ export function formatCurrency(value: number, currencyCode?: string): string {
  * @returns {string} Formatted date string
  */
 export function formatDate(dateString: string, format?: string): string {
-  const settingsStore = useSettingsStore();
-  const date = new Date(dateString);
-  
-  // Default format based on store setting
-  if (!format) {
-    switch (settingsStore.dateFormat) {
-      case 'yyyy-MM-dd':
-        return date.toISOString().split('T')[0];
-      case 'MM/dd/yyyy':
-        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-      case 'dd/MM/yyyy':
-        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-      default:
-        return date.toLocaleDateString();
+  if (dateString) {
+    const settingsStore = useSettingsStore();
+    const date = new Date(dateString);
+
+    // Default format based on store setting
+    if (!format) {
+      switch (settingsStore.dateFormat) {
+        case "yyyy-MM-dd":
+          return date.toISOString().split("T")[0];
+        case "MM/dd/yyyy":
+          return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+        case "dd/MM/yyyy":
+          return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+        default:
+          return date.toLocaleDateString();
+      }
     }
+
+    // Custom format
+    return date.toLocaleDateString();
+  } else {
+    return "";
   }
-  
-  // Custom format
-  return date.toLocaleDateString();
 }
 
 /**
@@ -60,14 +64,14 @@ export function formatDate(dateString: string, format?: string): string {
  */
 export function getStatusClass(status: string): string {
   switch (status.toLowerCase()) {
-    case 'completed':
-      return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-    case 'pending':
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
-    case 'failed':
-      return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+    case "completed":
+      return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+    case "pending":
+      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+    case "failed":
+      return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
     default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+      return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
   }
 }
 
@@ -77,7 +81,7 @@ export function getStatusClass(status: string): string {
  * @returns {string} Formatted number string
  */
 export function formatNumber(value: number): string {
-  return new Intl.NumberFormat().format(value);
+  return value ? new Intl.NumberFormat().format(value) : "0";
 }
 
 /**
@@ -87,6 +91,6 @@ export function formatNumber(value: number): string {
  * @returns {string} Formatted percentage string
  */
 export function formatPercentage(value: number, includeSymbol = true): string {
-  const formatted = (value * 100).toFixed(2);
+  const formatted = value ? (value * 100).toFixed(2) : "0.00";
   return includeSymbol ? `${formatted}%` : formatted;
 }

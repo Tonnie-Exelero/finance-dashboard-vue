@@ -18,4 +18,4 @@ app.use(pinia);
 app.mount('#app');
 
 // Log application version
-console.log(`Financial Dashboard v${import.meta.env.VITE_APP_VERSION || '1.0.0'}`);
+console.log(`Financial Dashboard v${process.env.VITE_APP_VERSION || '1.0.0'}`);
