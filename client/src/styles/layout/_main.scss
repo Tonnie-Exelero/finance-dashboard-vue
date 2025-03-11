@@ -43,7 +43,7 @@
   gap: a.$spacing-6;
   margin-top: a.$spacing-8;
 
-  @include a.respond-to(lg) {
+  @include a.respond-to(md) {
     grid-template-columns: repeat(2, 1fr);
   }
 }

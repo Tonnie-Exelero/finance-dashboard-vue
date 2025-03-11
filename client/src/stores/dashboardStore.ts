@@ -1,24 +1,24 @@
 /**
  * Dashboard Store
- * 
+ *
  * Manages the state for the dashboard, including summary data and charts.
- * 
+ *
  * @module stores/dashboardStore
  */
-import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
-import { useQuery } from '@vue/apollo-composable';
-import { gql } from '@apollo/client/core';
-import { DollarSign, CreditCard, TrendingUp } from 'lucide-vue-next';
-import { formatCurrency } from '@/utils/formatters';
-import type { 
-  SummaryData, 
-  RevenueData, 
-  ExpenseBreakdown, 
+import { defineStore } from "pinia";
+import { ref, computed, onMounted } from "vue";
+import { useQuery } from "@vue/apollo-composable";
+import { gql } from "@apollo/client/core";
+import { DollarSign, CreditCard, TrendingUp } from "lucide-vue-next";
+import { formatCurrency } from "@/utils/formatters";
+import type {
+  SummaryData,
+  RevenueData,
+  ExpenseBreakdown,
   SummaryCard,
   ChartData,
-  ChartOptions
-} from '@/types';
+  ChartOptions,
+} from "@/types";
 
 // GraphQL query for dashboard data
 const GET_DASHBOARD_DATA = gql`
@@ -41,23 +41,30 @@ const GET_DASHBOARD_DATA = gql`
   }
 `;
 
-export const useDashboardStore = defineStore('dashboard', () => {
+// Default empty chart data to prevent undefined errors
+const defaultChartData = {
+  labels: [],
+  datasets: [],
+};
+
+export const useDashboardStore = defineStore("dashboard", () => {
   // State
   const summaryData = ref<SummaryData>({
     totalBalance: 0,
     monthlyExpenses: 0,
     monthlyIncome: 0,
-    percentChange: 0
+    percentChange: 0,
   });
+
   const revenueData = ref<RevenueData[]>([]);
   const expenseBreakdown = ref<ExpenseBreakdown[]>([]);
-  const loading = ref(false);
+  const loading = ref(true);
   const error = ref<Error | null>(null);
   const isDarkMode = ref(false);
 
   // Apollo query setup
   const { onResult, onError, refetch } = useQuery(GET_DASHBOARD_DATA, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: "cache-and-network",
   });
 
   onResult((result) => {
@@ -77,68 +84,77 @@ export const useDashboardStore = defineStore('dashboard', () => {
   // Computed properties
   const summaryCards = computed<SummaryCard[]>(() => [
     {
-      title: 'Total Balance',
+      title: "Total Balance",
       value: formatCurrency(summaryData.value.totalBalance),
       icon: DollarSign,
-      percentChange: summaryData.value.percentChange
+      percentChange: summaryData.value.percentChange,
     },
     {
-      title: 'Monthly Expenses',
+      title: "Monthly Expenses",
       value: formatCurrency(summaryData.value.monthlyExpenses),
-      icon: CreditCard
+      icon: CreditCard,
     },
     {
-      title: 'Monthly Income',
+      title: "Monthly Income",
       value: formatCurrency(summaryData.value.monthlyIncome),
-      icon: TrendingUp
-    }
+      icon: TrendingUp,
+    },
   ]);
 
   const revenueChartData = computed<ChartData>(() => {
-    const months = revenueData.value.map(item => item.month);
-    const revenue = revenueData.value.map(item => item.revenue);
-    const expenses = revenueData.value.map(item => item.expenses);
+    if (!revenueData.value || revenueData.value.length === 0) {
+      return defaultChartData;
+    }
+
+    const months = revenueData.value.map((item) => item.month);
+    const revenue = revenueData.value.map((item) => item.revenue);
+    const expenses = revenueData.value.map((item) => item.expenses);
 
     return {
       labels: months,
       datasets: [
         {
-          label: 'Revenue',
-          backgroundColor: 'rgba(99, 102, 241, 0.2)',
-          borderColor: 'rgb(99, 102, 241)',
+          label: "Revenue",
+          backgroundColor: "rgba(99, 102, 241, 0.2)",
+          borderColor: "rgb(99, 102, 241)",
           data: revenue,
-          tension: 0.4
+          tension: 0.4,
         },
         {
-          label: 'Expenses',
-          backgroundColor: 'rgba(239, 68, 68, 0.2)',
-          borderColor: 'rgb(239, 68, 68)',
+          label: "Expenses",
+          backgroundColor: "rgba(239, 68, 68, 0.2)",
+          borderColor: "rgb(239, 68, 68)",
           data: expenses,
-          tension: 0.4
-        }
-      ]
+          tension: 0.4,
+        },
+      ],
     };
   });
 
   const expenseChartData = computed<ChartData>(() => {
-    const categories = expenseBreakdown.value.map(item => item.category);
-    const amounts = expenseBreakdown.value.map(item => item.amount);
+    if (!expenseBreakdown.value || expenseBreakdown.value.length === 0) {
+      return defaultChartData;
+    }
+
+    const categories = expenseBreakdown.value.map((item) => item.category);
+    const amounts = expenseBreakdown.value.map((item) => item.amount);
 
     return {
       labels: categories,
       datasets: [
         {
+          label: "Expenses by Category",
           backgroundColor: [
-            'rgba(99, 102, 241, 0.8)',
-            'rgba(239, 68, 68, 0.8)',
-            'rgba(245, 158, 11, 0.8)',
-            'rgba(16, 185, 129, 0.8)',
-            'rgba(139, 92, 246, 0.8)',
-            'rgba(14, 165, 233, 0.8)'
+            "rgba(99, 102, 241, 0.8)",
+            "rgba(239, 68, 68, 0.8)",
+            "rgba(245, 158, 11, 0.8)",
+            "rgba(16, 185, 129, 0.8)",
+            "rgba(139, 92, 246, 0.8)",
+            "rgba(14, 165, 233, 0.8)",
           ],
-          data: amounts
-        }
-      ]
+          data: amounts,
+        },
+      ],
     };
   });
 
@@ -149,28 +165,38 @@ export const useDashboardStore = defineStore('dashboard', () => {
       y: {
         beginAtZero: true,
         grid: {
-          color: isDarkMode.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+          color: isDarkMode.value
+            ? "rgba(255, 255, 255, 0.1)"
+            : "rgba(0, 0, 0, 0.1)",
         },
         ticks: {
-          color: isDarkMode.value ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)'
-        }
+          color: isDarkMode.value
+            ? "rgba(255, 255, 255, 0.7)"
+            : "rgba(0, 0, 0, 0.7)",
+        },
       },
       x: {
         grid: {
-          color: isDarkMode.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+          color: isDarkMode.value
+            ? "rgba(255, 255, 255, 0.1)"
+            : "rgba(0, 0, 0, 0.1)",
         },
         ticks: {
-          color: isDarkMode.value ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)'
-        }
-      }
+          color: isDarkMode.value
+            ? "rgba(255, 255, 255, 0.7)"
+            : "rgba(0, 0, 0, 0.7)",
+        },
+      },
     },
     plugins: {
       legend: {
         labels: {
-          color: isDarkMode.value ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)'
-        }
-      }
-    }
+          color: isDarkMode.value
+            ? "rgba(255, 255, 255, 0.7)"
+            : "rgba(0, 0, 0, 0.7)",
+        },
+      },
+    },
   }));
 
   const doughnutOptions = computed<ChartOptions>(() => ({
@@ -178,12 +204,14 @@ export const useDashboardStore = defineStore('dashboard', () => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'right',
+        position: "right",
         labels: {
-          color: isDarkMode.value ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)'
-        }
-      }
-    }
+          color: isDarkMode.value
+            ? "rgba(255, 255, 255, 0.7)"
+            : "rgba(0, 0, 0, 0.7)",
+        },
+      },
+    },
   }));
 
   // Actions
@@ -192,7 +220,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     error.value = null;
     try {
       await refetch();
-      loading.value = false;
     } catch (err: any) {
       error.value = err;
       loading.value = false;
@@ -203,6 +230,11 @@ export const useDashboardStore = defineStore('dashboard', () => {
     isDarkMode.value = value;
   }
 
+  // Fetch data on store initialization
+  onMounted(() => {
+    fetchDashboardData();
+  });
+
   return {
     // State
     summaryData,
@@ -211,16 +243,16 @@ export const useDashboardStore = defineStore('dashboard', () => {
     loading,
     error,
     isDarkMode,
-    
+
     // Getters
     summaryCards,
     revenueChartData,
     expenseChartData,
     chartOptions,
     doughnutOptions,
-    
+
     // Actions
     fetchDashboardData,
-    setDarkMode
+    setDarkMode,
   };
 });

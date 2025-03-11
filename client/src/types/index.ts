@@ -1,6 +1,6 @@
 /**
- * Type definitions for the Financial Dashboard
- * 
+ * Type definitions for the Financial Dashboard frontend
+ *
  * @module types
  */
 
@@ -11,7 +11,7 @@ export interface SummaryData {
   totalBalance: number;
   monthlyExpenses: number;
   monthlyIncome: number;
-  percentChange?: number;
+  percentChange: number;
 }
 
 /**
@@ -23,7 +23,7 @@ export interface Transaction {
   description: string;
   category: string;
   amount: number;
-  status: TransactionStatus;
+  status: string;
 }
 
 /**
@@ -34,7 +34,7 @@ export interface TransactionInput {
   description: string;
   category: string;
   amount: number;
-  status: TransactionStatus;
+  status: string;
 }
 
 /**
@@ -73,12 +73,12 @@ export interface ExpenseBreakdown {
 }
 
 /**
- * Summary card data
+ * Summary card for dashboard
  */
 export interface SummaryCard {
   title: string;
   value: string;
-  icon: any; // Component type
+  icon: any;
   percentChange?: number;
 }
 
@@ -95,10 +95,18 @@ export interface ChartData {
  */
 export interface ChartDataset {
   label?: string;
-  backgroundColor: string | string[];
-  borderColor?: string;
   data: number[];
+  backgroundColor?: string | string[];
+  borderColor?: string;
   tension?: number;
+}
+
+/**
+ * Chart data structure
+ */
+export interface ChartData {
+  labels: string[];
+  datasets: ChartDataset[];
 }
 
 /**
@@ -109,20 +117,20 @@ export interface ChartOptions {
   maintainAspectRatio: boolean;
   scales?: {
     y?: {
-      beginAtZero: boolean;
+      beginAtZero?: boolean;
       grid?: {
-        color: string;
+        color?: string;
       };
       ticks?: {
-        color: string;
+        color?: string;
       };
     };
     x?: {
       grid?: {
-        color: string;
+        color?: string;
       };
       ticks?: {
-        color: string;
+        color?: string;
       };
     };
   };
@@ -130,7 +138,7 @@ export interface ChartOptions {
     legend?: {
       position?: string;
       labels?: {
-        color: string;
+        color?: string;
       };
     };
   };
