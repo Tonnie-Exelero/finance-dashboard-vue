@@ -5,7 +5,7 @@
  *
  * @module graphql/resolvers/summary
  */
-import { getClient } from '../../db/index';
+import { getClient } from '../../db';
 import type { SummaryData, GraphQLContext } from '../../types/index';
 
 /**

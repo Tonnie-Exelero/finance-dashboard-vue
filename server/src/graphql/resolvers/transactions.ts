@@ -5,7 +5,7 @@
  *
  * @module graphql/resolvers/transactions
  */
-import { getClient } from '../../db/index';
+import { getClient } from '../../db';
 import type {
   Transaction,
   TransactionInput,
