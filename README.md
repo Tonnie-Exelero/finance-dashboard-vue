@@ -43,6 +43,7 @@ A responsive dashboard application for visualizing financial data with a Vue.js 
 - Prettier for code formatting
 - Husky for pre-commit hooks
 - Vitest for unit testing
+- Github Actions for workflow management
 - Yarn workspaces for monorepo management
 - Docker and Docker Compose for containerization
 
