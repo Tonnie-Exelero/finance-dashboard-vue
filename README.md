@@ -11,10 +11,8 @@ A responsive dashboard application for visualizing financial data with a Vue.js 
 - Summary cards showing key financial metrics
 - Interactive charts for revenue trends and expense breakdown
 - Transactions table with filtering and pagination
-- GraphQL API with PostgreSQL database
+- Transactions table with CRUD operations
 - Fully modular and maintainable TypeScript codebase
-- State management with Pinia
-- SASS for modular styling
 
 ## Tech Stack
 
@@ -36,6 +34,10 @@ A responsive dashboard application for visualizing financial data with a Vue.js 
 - Apollo Server for GraphQL API
 - PostgreSQL for data storage
 - GraphQL for API queries and mutations
+
+### Testing
+
+- Vitest for testing
 
 ### Development Tools
 
@@ -79,7 +81,7 @@ The project uses Pinia for state management, which offers several advantages:
 
 The project uses a modular SASS architecture to organize styles:
 
-1. **7-1 Pattern**: Styles are organized using a modified 7-1 pattern (abstracts, base, components, layout, pages, themes, vendors).
+1. **6-1 Pattern**: Styles are organized using a modified 6-1 pattern (abstracts, base, components, layout, themes, utilities).
 
 2. **Variables and Mixins**: Global variables and mixins are defined in the abstracts folder and imported where needed.
 

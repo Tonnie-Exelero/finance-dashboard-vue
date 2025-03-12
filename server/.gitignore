@@ -44,7 +44,6 @@ Thumbs.db
 
 # Testing & Coverage
 coverage/
-jest.config.js
 jest.config.ts
 test-results/
 .nyc_output/
