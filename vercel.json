@@ -30,9 +30,5 @@
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "workspaces": {
-    "root": ".",
-    "packages": ["client", "server"]
   }
 }
