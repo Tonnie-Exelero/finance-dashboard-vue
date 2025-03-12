@@ -2,6 +2,8 @@
 
 A responsive dashboard application for visualizing financial data with a Vue.js frontend and Node.js GraphQL API backend.
 
+![Financial Dashboard](./dashboard.png)
+
 ## Features
 
 - Interactive financial dashboard with responsive design
