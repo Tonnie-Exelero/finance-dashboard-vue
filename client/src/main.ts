@@ -18,5 +18,4 @@ app.use(pinia)
 app.mount('#app')
 
 // Log application version
-// @ts-expect-error
 console.log(`Financial Dashboard v${import.meta.env.VITE_APP_VERSION || '1.0.0'}`)
