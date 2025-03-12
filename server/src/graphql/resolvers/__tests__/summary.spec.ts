@@ -3,69 +3,79 @@ import { mockClient } from '../../../__tests__/setup';
 import { summaryResolvers } from '../summary';
 
 describe('Summary Resolvers', () => {
+  const mockContext = {
+    db: mockClient,
+    authToken: undefined,
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // Reset the mock implementation for each test
     mockClient.query.mockReset();
   });
 
   describe('Query resolvers', () => {
     it('fetches summary data', async () => {
-      // Setup mock responses for the multiple queries in summaryData
-      // First query - total balance
-      mockClient.query.mockImplementationOnce(() => ({
-        rows: [{ total: '5000.00' }],
-      }));
+      // Mock responses in order of: income, expenses, previous month, balance
+      mockClient.query
+        .mockResolvedValueOnce({ rows: [{ total: '3000.00' }] }) // Income
+        .mockResolvedValueOnce({ rows: [{ total: '1500.00' }] }) // Expenses
+        .mockResolvedValueOnce({ rows: [{ total: '4800.00' }] }) // Previous month
+        .mockResolvedValueOnce({ rows: [{ total: '5000.00' }] }); // Balance
 
-      // Second query - monthly income
-      mockClient.query.mockImplementationOnce(() => ({
-        rows: [{ total: '3000.00' }],
-      }));
+      const result = await summaryResolvers.Query.summaryData(null, {}, mockContext);
 
-      // Third query - monthly expenses
-      mockClient.query.mockImplementationOnce(() => ({
-        rows: [{ total: '1500.00' }],
-      }));
+      // Verify calculated values
+      expect(result).toEqual({
+        totalBalance: 5000,
+        monthlyExpenses: 1500,
+        monthlyIncome: 3000,
+        percentChange: ((1500 - 4800) / 4800) * 100, // (current - previous)/previous * 100
+      });
 
-      // Fourth query - previous month total
-      mockClient.query.mockImplementationOnce(() => ({
-        rows: [{ total: '4800.00' }],
-      }));
-
-      const result = await summaryResolvers.Query.summaryData(null, {}, {});
-
-      expect(result.totalBalance).toBe(4800);
-      expect(result.monthlyExpenses).toBe(3000);
-      expect(result.monthlyIncome).toBe(5000);
-
-      // Verify the queries were called
+      // Verify query count and parameters
       expect(mockClient.query).toHaveBeenCalledTimes(4);
+      expect(mockClient.query).toHaveBeenNthCalledWith(
+        1,
+        expect.stringContaining('WHERE amount > 0'),
+        expect.any(Array)
+      );
+      expect(mockClient.query).toHaveBeenNthCalledWith(
+        2,
+        expect.stringContaining('WHERE amount < 0'),
+        expect.any(Array)
+      );
     });
 
     it('handles database errors', async () => {
-      // Setup mock to throw an error
       mockClient.query.mockRejectedValueOnce(new Error('Database error'));
-
-      // Expect the resolver to throw an error
-      await expect(summaryResolvers.Query.summaryData(null, {}, {})).rejects.toThrow(
+      await expect(summaryResolvers.Query.summaryData(null, {}, mockContext)).rejects.toThrow(
         'Failed to fetch summary data'
       );
     });
 
-    it('handles empty data', async () => {
-      // Setup mock responses for empty results
-      mockClient.query.mockImplementation(() => ({
-        rows: [{ total: null }],
-      }));
+    it('handles empty data with COALESCE defaults', async () => {
+      // Mock all queries returning zero values
+      mockClient.query.mockResolvedValue({ rows: [{ total: '0' }] });
 
-      const result = await summaryResolvers.Query.summaryData(null, {}, {});
+      const result = await summaryResolvers.Query.summaryData(null, {}, mockContext);
 
-      // Should default to zero values
-      expect(result.totalBalance).toBe(NaN);
-      expect(result.monthlyExpenses).toBe(NaN);
-      expect(result.monthlyIncome).toBe(NaN);
-      expect(result.percentChange).toBe(NaN);
+      expect(result).toEqual({
+        totalBalance: 0,
+        monthlyExpenses: 0,
+        monthlyIncome: 0,
+        percentChange: 0, // (0 - 0)/0 becomes 0 in our calculation
+      });
+    });
+
+    it('calculates percent change correctly with zero previous month', async () => {
+      mockClient.query
+        .mockResolvedValueOnce({ rows: [{ total: '2000.00' }] })
+        .mockResolvedValueOnce({ rows: [{ total: '500.00' }] })
+        .mockResolvedValueOnce({ rows: [{ total: '0.00' }] })
+        .mockResolvedValueOnce({ rows: [{ total: '1500.00' }] });
+
+      const result = await summaryResolvers.Query.summaryData(null, {}, mockContext);
+      expect(result.percentChange).toBe(Infinity); // (1500 - 0)/0 * 100
     });
   });
 });

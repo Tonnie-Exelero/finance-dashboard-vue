@@ -3,17 +3,19 @@ import { mockClient } from '../../../__tests__/setup';
 import { transactionResolvers } from '../transactions';
 
 describe('Transaction Resolvers', () => {
+  const mockContext = {
+    db: mockClient,
+    authToken: undefined,
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // Reset the mock implementation for each test
     mockClient.query.mockReset();
   });
 
   describe('Query resolvers', () => {
     it('fetches transactions with pagination', async () => {
-      // Setup mock response for this specific test
-      mockClient.query.mockImplementationOnce(() => ({
+      mockClient.query.mockResolvedValueOnce({
         rows: [
           {
             id: 1,
@@ -32,94 +34,104 @@ describe('Transaction Resolvers', () => {
             status: 'Completed',
           },
         ],
-      }));
+      });
 
       const result = await transactionResolvers.Query.transactions(
         null,
         { limit: 10, offset: 0 },
-        {}
+        mockContext
       );
 
-      expect(result).toHaveLength(2);
-      expect(result[0].id).toBe('1');
-      expect(result[0].description).toBe('Salary');
-      expect(result[1].id).toBe('2');
-      expect(result[1].description).toBe('Rent');
+      expect(result).toEqual([
+        {
+          id: '1',
+          date: '2023-01-15',
+          description: 'Salary',
+          category: 'Income',
+          amount: 5000,
+          status: 'Completed',
+        },
+        {
+          id: '2',
+          date: '2023-01-20',
+          description: 'Rent',
+          category: 'Housing',
+          amount: -1500,
+          status: 'Completed',
+        },
+      ]);
 
-      // Verify the query was called with the correct parameters
       expect(mockClient.query).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT * FROM transactions'),
+        'SELECT * FROM transactions ORDER BY date DESC LIMIT $1 OFFSET $2',
         [10, 0]
       );
     });
 
     it('counts transactions', async () => {
-      // Setup mock response for this specific test
-      mockClient.query.mockImplementationOnce(() => ({
-        rows: [{ count: '2' }],
-      }));
+      mockClient.query.mockResolvedValueOnce({ rows: [{ count: '2' }] });
 
-      const result = await transactionResolvers.Query.transactionCount(null, {}, {});
+      const result = await transactionResolvers.Query.transactionCount(null, {}, mockContext);
 
       expect(result).toBe(2);
-
-      // Verify the query was called
-      expect(mockClient.query).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT COUNT(*) FROM transactions')
-      );
+      expect(mockClient.query).toHaveBeenCalledWith('SELECT COUNT(*) FROM transactions');
     });
 
     it('handles database errors when fetching transactions', async () => {
-      // Setup mock to throw an error
       mockClient.query.mockRejectedValueOnce(new Error('Database error'));
 
-      // Expect the resolver to throw an error
       await expect(
-        transactionResolvers.Query.transactions(null, { limit: 10, offset: 0 }, {})
+        transactionResolvers.Query.transactions(null, { limit: 10, offset: 0 }, mockContext)
       ).rejects.toThrow('Failed to fetch transactions');
     });
   });
 
   describe('Mutation resolvers', () => {
+    const mockTransaction = {
+      id: '1',
+      date: '2023-01-15',
+      description: 'Salary',
+      category: 'Income',
+      amount: 5000,
+      status: 'Completed',
+    };
+
     it('adds a transaction', async () => {
-      // Setup mock response for this specific test
-      mockClient.query.mockImplementationOnce(() => ({
+      mockClient.query.mockResolvedValueOnce({
         rows: [
           {
-            id: 3,
-            date: new Date('2023-02-01'),
-            description: 'New Transaction',
-            category: 'Food',
-            amount: -50.0,
-            status: 'Pending',
+            id: 1,
+            date: new Date('2023-01-15'),
+            description: 'Salary',
+            category: 'Income',
+            amount: 5000.0,
+            status: 'Completed',
           },
         ],
-      }));
+      });
 
       const input = {
-        date: '2023-02-01',
-        description: 'New Transaction',
-        category: 'Food',
-        amount: -50.0,
-        status: 'Pending',
+        date: '2023-01-15',
+        description: 'Salary',
+        category: 'Income',
+        amount: 5000.0,
+        status: 'Completed',
       };
 
-      const result = await transactionResolvers.Mutation.addTransaction(null, { input }, {});
+      const result = await transactionResolvers.Mutation.addTransaction(
+        null,
+        { input },
+        mockContext
+      );
 
-      expect(result.id).toBe('3');
-      expect(result.description).toBe('New Transaction');
-      expect(result.amount).toBe(-50);
-
-      // Verify the query was called with the correct parameters
+      expect(result).toEqual(mockTransaction);
       expect(mockClient.query).toHaveBeenCalledWith(
-        expect.stringContaining('INSERT INTO transactions'),
-        expect.arrayContaining(['2023-02-01', 'New Transaction', 'Food', -50.0, 'Pending'])
+        'INSERT INTO transactions (date, description, category, amount, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        ['2023-01-15', 'Salary', 'Income', 5000.0, 'Completed']
       );
     });
 
     it('updates a transaction', async () => {
-      // Setup mock response for this specific test
-      mockClient.query.mockImplementationOnce(() => ({
+      mockClient.query.mockResolvedValueOnce({
         rows: [
           {
             id: 1,
@@ -130,7 +142,7 @@ describe('Transaction Resolvers', () => {
             status: 'Completed',
           },
         ],
-      }));
+      });
 
       const input = {
         date: '2023-01-15',
@@ -143,60 +155,55 @@ describe('Transaction Resolvers', () => {
       const result = await transactionResolvers.Mutation.updateTransaction(
         null,
         { id: '1', input },
-        {}
+        mockContext
       );
 
-      expect(result.id).toBe('1');
-      expect(result.description).toBe('Updated Salary');
-      expect(result.amount).toBe(5500);
+      expect(result).toEqual({
+        ...mockTransaction,
+        description: 'Updated Salary',
+        amount: 5500,
+      });
 
-      // Verify the query was called with the correct parameters
       expect(mockClient.query).toHaveBeenCalledWith(
-        expect.stringContaining('UPDATE transactions'),
-        expect.arrayContaining(['2023-01-15', 'Updated Salary', 'Income', 5500.0, 'Completed', '1'])
+        'UPDATE transactions SET date = $1, description = $2, category = $3, amount = $4, status = $5 WHERE id = $6 RETURNING *',
+        ['2023-01-15', 'Updated Salary', 'Income', 5500.0, 'Completed', 1]
       );
     });
 
     it('deletes a transaction', async () => {
-      // Setup mock response for this specific test
-      mockClient.query.mockImplementationOnce(() => ({
-        rows: [{ id: 2 }],
-      }));
+      mockClient.query.mockResolvedValueOnce({ rows: [{ id: 1 }] });
 
-      const result = await transactionResolvers.Mutation.deleteTransaction(null, { id: '2' }, {});
+      const result = await transactionResolvers.Mutation.deleteTransaction(
+        null,
+        { id: '1' },
+        mockContext
+      );
 
       expect(result).toBe(true);
-
-      // Verify the query was called with the correct parameters
       expect(mockClient.query).toHaveBeenCalledWith(
-        expect.stringContaining('DELETE FROM transactions'),
-        ['2']
+        'DELETE FROM transactions WHERE id = $1 RETURNING id',
+        [1]
       );
     });
 
     it('handles database errors when adding a transaction', async () => {
-      // Setup mock to throw an error
       mockClient.query.mockRejectedValueOnce(new Error('Database error'));
 
       const input = {
-        date: '2023-02-01',
-        description: 'New Transaction',
-        category: 'Food',
-        amount: -50.0,
-        status: 'Pending',
+        date: '2023-01-15',
+        description: 'Salary',
+        category: 'Income',
+        amount: 5000.0,
+        status: 'Completed',
       };
 
-      // Expect the resolver to throw an error
       await expect(
-        transactionResolvers.Mutation.addTransaction(null, { input }, {})
+        transactionResolvers.Mutation.addTransaction(null, { input }, mockContext)
       ).rejects.toThrow('Failed to add transaction');
     });
 
     it('handles not found error when updating a transaction', async () => {
-      // Setup mock response for an empty result (transaction not found)
-      mockClient.query.mockImplementationOnce(() => ({
-        rows: [],
-      }));
+      mockClient.query.mockResolvedValueOnce({ rows: [] });
 
       const input = {
         date: '2023-01-15',
@@ -206,22 +213,17 @@ describe('Transaction Resolvers', () => {
         status: 'Completed',
       };
 
-      // Expect the resolver to throw an error
       await expect(
-        transactionResolvers.Mutation.updateTransaction(null, { id: '999', input }, {})
-      ).rejects.toThrow('Failed to update transaction');
+        transactionResolvers.Mutation.updateTransaction(null, { id: '999', input }, mockContext)
+      ).rejects.toThrow('Transaction with ID 999 not found');
     });
 
     it('handles not found error when deleting a transaction', async () => {
-      // Setup mock response for an empty result (transaction not found)
-      mockClient.query.mockImplementationOnce(() => ({
-        rows: [],
-      }));
+      mockClient.query.mockResolvedValueOnce({ rows: [] });
 
-      // Expect the resolver to throw an error
       await expect(
-        transactionResolvers.Mutation.deleteTransaction(null, { id: '999' }, {})
-      ).rejects.toThrow('Failed to delete transaction');
+        transactionResolvers.Mutation.deleteTransaction(null, { id: '999' }, mockContext)
+      ).rejects.toThrow('Transaction with ID 999 not found');
     });
   });
 });
