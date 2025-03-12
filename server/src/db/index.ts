@@ -22,7 +22,7 @@ export async function connectToDatabase(): Promise<pg.Client> {
     port: Number(process.env.PGPORT) || 5432,
     database: process.env.PGDATABASE || 'neondb',
     user: process.env.PGUSER || 'neondb_owner',
-    password: process.env.PGPASSWORD || 'npg_K8iA5XMUsCIx',
+    password: process.env.PGPASSWORD || '',
     ssl: process.env.NODE_ENV === 'production',
   };
 
