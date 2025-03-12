@@ -9,15 +9,21 @@ import type { DefaultOptions } from '@apollo/client/core'
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core'
 import { provideApolloClient } from '@vue/apollo-composable'
 
-/**
- * Initialize and provide the Apollo Client
- * @returns {ApolloClient} The configured Apollo Client instance
- */
 export function useApolloClient() {
+  // Get environment variables with proper typing
+  const API_URL = import.meta.env.VITE_API_URL
+  const NODE_ENV = import.meta.env.VITE_NODE_ENV
+
+  if (!API_URL) {
+    throw new Error('VITE_API_URL environment variable is not defined')
+  }
+
   // HTTP connection to the API
   const httpLink = createHttpLink({
-    // @ts-expect-error
-    uri: import.meta.env.VITE_API_URL || 'http://localhost:4000/api/graphql',
+    uri: API_URL,
+    headers: {
+      'Content-Type': 'application/json',
+    },
   })
 
   // Cache implementation
@@ -43,8 +49,7 @@ export function useApolloClient() {
     link: httpLink,
     cache,
     defaultOptions,
-    // @ts-expect-error
-    connectToDevTools: import.meta.env.VITE_NODE_ENV !== 'production',
+    connectToDevTools: NODE_ENV !== 'production',
   })
 
   // Provide the apollo client to the Vue app

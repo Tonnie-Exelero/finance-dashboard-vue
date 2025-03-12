@@ -17,7 +17,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load environment variables based on NODE_ENV
-const envPath = path.resolve(__dirname, `../../../.env`);
+const envPath = path.resolve(
+  __dirname,
+  process.env.NODE_ENV === 'production' ? `../../.env` : `../../../.env`
+);
 
 dotenv.config({ path: envPath });
 
