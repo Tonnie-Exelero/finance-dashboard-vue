@@ -5,7 +5,6 @@
  *
  * @module graphql/resolvers/transactions
  */
-import { getClient } from '../../db';
 import type {
   Transaction,
   TransactionInput,
@@ -22,13 +21,12 @@ export const transactionResolvers = {
      * Get transactions with optional pagination
      */
     transactions: async (
-      _: any,
+      _: unknown,
       { limit = 10, offset = 0 }: PaginationParams,
-      _context: GraphQLContext
+      context: GraphQLContext
     ): Promise<Transaction[]> => {
       try {
-        const client = getClient();
-        const result = await client.query(
+        const result = await context.db.query(
           'SELECT * FROM transactions ORDER BY date DESC LIMIT $1 OFFSET $2',
           [limit, offset]
         );
@@ -50,11 +48,10 @@ export const transactionResolvers = {
     /**
      * Get total count of transactions
      */
-    transactionCount: async (_: any, __: any, _context: GraphQLContext): Promise<number> => {
+    transactionCount: async (_: unknown, __: unknown, context: GraphQLContext): Promise<number> => {
       try {
-        const client = getClient();
-        const result = await client.query('SELECT COUNT(*) FROM transactions');
-        return parseInt(result.rows[0].count);
+        const result = await context.db.query('SELECT COUNT(*) FROM transactions');
+        return parseInt(result.rows[0].count, 10);
       } catch (error) {
         console.error('Error counting transactions:', error);
         throw new Error('Failed to count transactions');
@@ -67,15 +64,13 @@ export const transactionResolvers = {
      * Add a new transaction
      */
     addTransaction: async (
-      _: any,
+      _: unknown,
       { input }: { input: TransactionInput },
-      _context: GraphQLContext
+      context: GraphQLContext
     ): Promise<Transaction> => {
       try {
-        const client = getClient();
         const { date, description, category, amount, status } = input;
-
-        const result = await client.query(
+        const result = await context.db.query(
           `INSERT INTO transactions (date, description, category, amount, status) 
            VALUES ($1, $2, $3, $4, $5) 
            RETURNING *`,
@@ -101,20 +96,18 @@ export const transactionResolvers = {
      * Update an existing transaction
      */
     updateTransaction: async (
-      _: any,
+      _: unknown,
       { id, input }: { id: string; input: TransactionInput },
-      _context: GraphQLContext
+      context: GraphQLContext
     ): Promise<Transaction> => {
       try {
-        const client = getClient();
         const { date, description, category, amount, status } = input;
-
-        const result = await client.query(
+        const result = await context.db.query(
           `UPDATE transactions 
            SET date = $1, description = $2, category = $3, amount = $4, status = $5 
            WHERE id = $6 
            RETURNING *`,
-          [date, description, category, amount, status, id]
+          [date, description, category, amount, status, parseInt(id, 10)]
         );
 
         if (result.rows.length === 0) {
@@ -140,15 +133,15 @@ export const transactionResolvers = {
      * Delete a transaction
      */
     deleteTransaction: async (
-      _: any,
+      _: unknown,
       { id }: { id: string },
-      _context: GraphQLContext
+      context: GraphQLContext
     ): Promise<boolean> => {
       try {
-        const client = getClient();
-        const result = await client.query('DELETE FROM transactions WHERE id = $1 RETURNING id', [
-          id,
-        ]);
+        const result = await context.db.query(
+          'DELETE FROM transactions WHERE id = $1 RETURNING id',
+          [parseInt(id, 10)]
+        );
 
         if (result.rows.length === 0) {
           throw new Error(`Transaction with ID ${id} not found`);

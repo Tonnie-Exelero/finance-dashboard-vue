@@ -4,6 +4,8 @@
  * @module types
  */
 
+import { QueryResult } from "pg";
+
 /**
  * Database client configuration
  */
@@ -70,7 +72,10 @@ export interface ExpenseBreakdown {
  * Context for GraphQL resolvers
  */
 export interface GraphQLContext {
-  // Add authentication context here if needed
+  db: {
+    query: (text: string, params?: any[]) => Promise<QueryResult>;
+  };
+  authToken?: string;
 }
 
 /**

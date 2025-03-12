@@ -5,7 +5,6 @@
  *
  * @module graphql/resolvers/charts
  */
-import { getClient } from '../../db';
 import type { RevenueData, ExpenseBreakdown, GraphQLContext } from '../../types/index';
 
 /**
@@ -16,12 +15,14 @@ export const chartResolvers = {
     /**
      * Get revenue data for charts
      */
-    revenueData: async (_: any, __: any, _context: GraphQLContext): Promise<RevenueData[]> => {
+    revenueData: async (
+      _: unknown,
+      __: unknown,
+      context: GraphQLContext
+    ): Promise<RevenueData[]> => {
       try {
-        const client = getClient();
-
-        // Get the last 6 months of data
-        const result = await client.query(`
+        // Use context.db.query instead of getClient()
+        const result = await context.db.query(`
           WITH months AS (
             SELECT generate_series(
               date_trunc('month', current_date - interval '5 months'),
@@ -70,21 +71,20 @@ export const chartResolvers = {
      * Get expense breakdown by category
      */
     expenseBreakdown: async (
-      _: any,
-      __: any,
-      _context: GraphQLContext
+      _: unknown,
+      __: unknown,
+      context: GraphQLContext
     ): Promise<ExpenseBreakdown[]> => {
       try {
-        const client = getClient();
-
-        // Get expenses by category for the current month
+        // Calculate date ranges
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth() + 1;
         const currentYear = currentDate.getFullYear();
         const firstDayOfMonth = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-01`;
         const lastDayOfMonth = new Date(currentYear, currentMonth, 0).toISOString().split('T')[0];
 
-        const result = await client.query(
+        // Use context.db.query instead of getClient()
+        const result = await context.db.query(
           `
           SELECT 
             category,

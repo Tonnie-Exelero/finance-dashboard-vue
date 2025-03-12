@@ -5,54 +5,71 @@
  *
  * @module server
  */
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Load .env from project root
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
-
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { expressMiddleware } from '@apollo/server/express4';
+import express from 'express';
+import { connectToDatabase, query } from './db';
+import { typeDefs } from './graphql/schema';
+import { resolvers } from './graphql/resolvers';
+import type { GraphQLContext } from './types';
+import cors from 'cors';
 
-// Import database connection
-import { connectToDatabase } from './db/index';
+// Vercel requires this for serverless functions
+const app = express();
+const port = process.env.PORT || 4000;
 
-// Import GraphQL schema and resolvers
-import { typeDefs } from './graphql/schema/index';
-import { resolvers } from './graphql/resolvers/index';
-import type { GraphQLContext } from './types/index';
-
-/**
- * Start the Apollo Server
- */
-async function startServer(): Promise<void> {
+async function startServer() {
   try {
-    // Connect to the database
     await connectToDatabase();
 
-    // Initialize Apollo Server
     const server = new ApolloServer<GraphQLContext>({
       typeDefs,
       resolvers,
+      cache: 'bounded',
+      persistedQueries: false,
     });
 
-    // Start the server
-    const { url } = await startStandaloneServer(server, {
-      listen: { port: parseInt(process.env.PORT || '4000') },
-      context: async ({ req }): Promise<GraphQLContext> => {
-        // Add authentication context here if needed
-        return {};
-      },
+    await server.start();
+
+    // Apply CORS and body parser
+    app.use(
+      '/api/graphql',
+      cors<cors.CorsRequest>({
+        origin: process.env.CLIENT_URL || 'http://localhost:5173',
+        credentials: true,
+      }),
+      express.json(),
+      expressMiddleware(server, {
+        context: async ({ req }) => ({
+          // Add authentication context here
+          db: { query },
+          authToken: req.headers.authorization,
+        }),
+      })
+    );
+
+    // Health check endpoint
+    app.get('/health', (req, res) => {
+      res.status(200).json({ status: 'ok' });
     });
 
-    console.log(`🚀 Server ready at ${url}`);
+    // Vercel requires this handler
+    app.use((req, res) => {
+      res.status(404).json({ error: 'Not found' });
+    });
+
+    if (process.env.NODE_ENV !== 'production') {
+      app.listen(port, () => {
+        console.log(`🚀 Server ready at http://localhost:${port}/api/graphql`);
+      });
+    }
+
+    return app;
   } catch (error) {
     console.error('Error starting server:', error);
     process.exit(1);
   }
 }
 
-// Start the server
-startServer();
+// Export for Vercel serverless functions
+export default startServer();

@@ -20,7 +20,7 @@ export const useSettingsStore = defineStore('settings', () => {
     const storedDarkMode = localStorage.getItem('darkMode')
     if (storedDarkMode) {
       isDarkMode.value = storedDarkMode === 'dark'
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
       isDarkMode.value = true
     }
 

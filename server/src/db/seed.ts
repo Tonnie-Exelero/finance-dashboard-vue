@@ -5,13 +5,13 @@
  *
  * @module db/seed
  */
-import type { Client } from 'pg';
+import type { Pool, Client } from 'pg';
 
 /**
  * Seed the database with initial data
- * @param {Client} client - PostgreSQL client
+ * @param {Pool, Client} client - PostgreSQL pool or client
  */
-export async function seedData(client: Client): Promise<void> {
+export async function seedData(client: Pool | Client): Promise<void> {
   try {
     // Sample transactions data
     const transactions = [
