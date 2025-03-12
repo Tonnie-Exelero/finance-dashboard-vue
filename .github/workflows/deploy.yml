@@ -22,12 +22,6 @@ jobs:
       - name: Build
         run: yarn build
       
-      - name: Run database migrations
-        run: yarn workspace financial-dashboard-server migrate
-        env:
-          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
-          POSTGRES_URL_NON_POOLING: ${{ secrets.POSTGRES_URL_NON_POOLING }}
-      
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
         with:
