@@ -8,10 +8,14 @@
         <div class="summary-card__content">
           <div class="summary-card__title">{{ card.title }}</div>
           <div class="summary-card__value">{{ card.value }}</div>
-          <div 
+          <div
             v-if="card.percentChange !== undefined"
             class="summary-card__footer"
-            :class="card.percentChange >= 0 ? 'summary-card__footer--positive' : 'summary-card__footer--negative'"
+            :class="
+              card.percentChange >= 0
+                ? 'summary-card__footer--positive'
+                : 'summary-card__footer--negative'
+            "
           >
             <TrendingUpIcon v-if="card.percentChange >= 0" />
             <TrendingDownIcon v-else />
@@ -26,23 +30,19 @@
 <script setup lang="ts">
 /**
  * Dashboard Summary Component
- * 
+ *
  * Displays summary cards with key financial metrics.
- * 
+ *
  * @component
  */
-import { TrendingUpIcon, TrendingDownIcon } from 'lucide-vue-next';
-import type { SummaryCard } from '@/types';
+import { TrendingUpIcon, TrendingDownIcon } from 'lucide-vue-next'
+// eslint-disable-next-line
+import type { SummaryCard } from '@/types'
 
 defineProps<{
   /**
    * Array of summary card data objects
    */
-  summaryCards: SummaryCard[];
-}>();
+  summaryCards: SummaryCard[]
+}>()
 </script>
-
-<style lang="scss" scoped>
-// Component-specific styles can be added here if needed
-// Most styles are in the global SCSS file: src/styles/components/_cards.scss
-</style>

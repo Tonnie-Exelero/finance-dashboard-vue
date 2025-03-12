@@ -5,13 +5,13 @@
  *
  * @module graphql/resolvers/transactions
  */
-import { getClient } from "../../db/index";
+import { getClient } from '../../db/index';
 import type {
   Transaction,
   TransactionInput,
   GraphQLContext,
   PaginationParams,
-} from "../../types/index";
+} from '../../types/index';
 
 /**
  * Transaction resolvers
@@ -29,39 +29,35 @@ export const transactionResolvers = {
       try {
         const client = getClient();
         const result = await client.query(
-          "SELECT * FROM transactions ORDER BY date DESC LIMIT $1 OFFSET $2",
+          'SELECT * FROM transactions ORDER BY date DESC LIMIT $1 OFFSET $2',
           [limit, offset]
         );
 
         return result.rows.map((row) => ({
           id: row.id.toString(),
-          date: row.date.toISOString().split("T")[0],
+          date: row.date.toISOString().split('T')[0],
           description: row.description,
           category: row.category,
           amount: parseFloat(row.amount),
           status: row.status,
         }));
       } catch (error) {
-        console.error("Error fetching transactions:", error);
-        throw new Error("Failed to fetch transactions");
+        console.error('Error fetching transactions:', error);
+        throw new Error('Failed to fetch transactions');
       }
     },
 
     /**
      * Get total count of transactions
      */
-    transactionCount: async (
-      _: any,
-      __: any,
-      _context: GraphQLContext
-    ): Promise<number> => {
+    transactionCount: async (_: any, __: any, _context: GraphQLContext): Promise<number> => {
       try {
         const client = getClient();
-        const result = await client.query("SELECT COUNT(*) FROM transactions");
+        const result = await client.query('SELECT COUNT(*) FROM transactions');
         return parseInt(result.rows[0].count);
       } catch (error) {
-        console.error("Error counting transactions:", error);
-        throw new Error("Failed to count transactions");
+        console.error('Error counting transactions:', error);
+        throw new Error('Failed to count transactions');
       }
     },
   },
@@ -89,15 +85,15 @@ export const transactionResolvers = {
         const newTransaction = result.rows[0];
         return {
           id: newTransaction.id.toString(),
-          date: newTransaction.date.toISOString().split("T")[0],
+          date: newTransaction.date.toISOString().split('T')[0],
           description: newTransaction.description,
           category: newTransaction.category,
           amount: parseFloat(newTransaction.amount),
           status: newTransaction.status,
         };
       } catch (error) {
-        console.error("Error adding transaction:", error);
-        throw new Error("Failed to add transaction");
+        console.error('Error adding transaction:', error);
+        throw new Error('Failed to add transaction');
       }
     },
 
@@ -128,15 +124,15 @@ export const transactionResolvers = {
         const updatedTransaction = result.rows[0];
         return {
           id: updatedTransaction.id.toString(),
-          date: updatedTransaction.date.toISOString().split("T")[0],
+          date: updatedTransaction.date.toISOString().split('T')[0],
           description: updatedTransaction.description,
           category: updatedTransaction.category,
           amount: parseFloat(updatedTransaction.amount),
           status: updatedTransaction.status,
         };
       } catch (error) {
-        console.error("Error updating transaction:", error);
-        throw new Error("Failed to update transaction");
+        console.error('Error updating transaction:', error);
+        throw new Error('Failed to update transaction');
       }
     },
 
@@ -150,10 +146,9 @@ export const transactionResolvers = {
     ): Promise<boolean> => {
       try {
         const client = getClient();
-        const result = await client.query(
-          "DELETE FROM transactions WHERE id = $1 RETURNING id",
-          [id]
-        );
+        const result = await client.query('DELETE FROM transactions WHERE id = $1 RETURNING id', [
+          id,
+        ]);
 
         if (result.rows.length === 0) {
           throw new Error(`Transaction with ID ${id} not found`);
@@ -161,8 +156,8 @@ export const transactionResolvers = {
 
         return true;
       } catch (error) {
-        console.error("Error deleting transaction:", error);
-        throw new Error("Failed to delete transaction");
+        console.error('Error deleting transaction:', error);
+        throw new Error('Failed to delete transaction');
       }
     },
   },

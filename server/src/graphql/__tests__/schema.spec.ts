@@ -1,10 +1,10 @@
-import { describe, it, expect } from "vitest";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { typeDefs } from "../schema";
-import { resolvers } from "../resolvers";
+import { describe, it, expect } from 'vitest';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { typeDefs } from '../schema';
+import { resolvers } from '../resolvers';
 
-describe("GraphQL Schema", () => {
-  it("creates a valid schema with resolvers", () => {
+describe('GraphQL Schema', () => {
+  it('creates a valid schema with resolvers', () => {
     // This will throw an error if the schema is invalid
     const schema = makeExecutableSchema({
       typeDefs,
@@ -14,7 +14,7 @@ describe("GraphQL Schema", () => {
     expect(schema).toBeDefined();
   });
 
-  it("has resolvers for all defined queries and mutations", () => {
+  it('has resolvers for all defined queries and mutations', () => {
     // Check Query resolvers
     expect(resolvers.Query).toBeDefined();
     expect(resolvers.Query.transactions).toBeDefined();

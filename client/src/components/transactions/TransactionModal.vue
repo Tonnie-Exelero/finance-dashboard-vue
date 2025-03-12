@@ -7,13 +7,13 @@
           <XIcon />
         </button>
       </div>
-      
+
       <div class="modal__body">
         <form @submit.prevent="handleSubmit">
           <div class="form-group">
             <label for="date" class="form-label">Date</label>
-            <input 
-              type="date" 
+            <input
+              type="date"
               id="date"
               v-model="form.date"
               class="form-control"
@@ -22,11 +22,11 @@
             />
             <span v-if="errors.date" class="form-error">{{ errors.date }}</span>
           </div>
-          
+
           <div class="form-group">
             <label for="description" class="form-label">Description</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="description"
               v-model="form.description"
               class="form-control"
@@ -35,10 +35,10 @@
             />
             <span v-if="errors.description" class="form-error">{{ errors.description }}</span>
           </div>
-          
+
           <div class="form-group">
             <label for="category" class="form-label">Category</label>
-            <select 
+            <select
               id="category"
               v-model="form.category"
               class="form-control"
@@ -51,11 +51,11 @@
             </select>
             <span v-if="errors.category" class="form-error">{{ errors.category }}</span>
           </div>
-          
+
           <div class="form-group">
             <label for="amount" class="form-label">Amount</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               id="amount"
               v-model.number="form.amount"
               step="0.01"
@@ -66,10 +66,10 @@
             <span class="form-text">Use positive values for income, negative for expenses</span>
             <span v-if="errors.amount" class="form-error">{{ errors.amount }}</span>
           </div>
-          
+
           <div class="form-group">
             <label for="status" class="form-label">Status</label>
-            <select 
+            <select
               id="status"
               v-model="form.status"
               class="form-control"
@@ -84,16 +84,10 @@
           </div>
         </form>
       </div>
-      
+
       <div class="modal__footer">
-        <button 
-          type="button"
-          @click="$emit('close')"
-          class="btn btn--outline"
-        >
-          Cancel
-        </button>
-        <button 
+        <button type="button" @click="$emit('close')" class="btn btn--outline">Cancel</button>
+        <button
           type="button"
           @click="handleSubmit"
           class="btn btn--primary"
@@ -110,34 +104,35 @@
 <script setup lang="ts">
 /**
  * Transaction Modal Component
- * 
+ *
  * Modal for adding or editing transactions.
- * 
+ *
  * @component
  * @emits close - Emitted when the modal is closed
  * @emits save - Emitted when a transaction is saved
  */
-import { ref, reactive, computed, onMounted, watch } from 'vue';
-import { XIcon } from 'lucide-vue-next';
-import type { Transaction, TransactionStatus, TransactionCategory } from '@/types';
+import { ref, reactive, computed, watch } from 'vue'
+import { XIcon } from 'lucide-vue-next'
+// eslint-disable-next-line
+import type { Transaction, TransactionStatus, TransactionCategory } from '@/types'
 
 const props = defineProps<{
   /**
    * Transaction to edit (null for new transaction)
    */
-  transaction: Transaction | null;
-}>();
+  transaction: Transaction | null
+}>()
 
 const emit = defineEmits<{
   /**
    * Emitted when the modal is closed
    */
-  (e: 'close'): void;
+  (e: 'close'): void
   /**
    * Emitted when a transaction is saved
    */
-  (e: 'save', transaction: Transaction | Omit<Transaction, 'id'>): void;
-}>();
+  (e: 'save', transaction: Transaction | Omit<Transaction, 'id'>): void
+}>()
 
 // Form state
 let form = reactive({
@@ -145,37 +140,41 @@ let form = reactive({
   description: '',
   category: 'Other' as TransactionCategory,
   amount: 0,
-  status: 'Completed' as TransactionStatus
-});
+  status: 'Completed' as TransactionStatus,
+})
 
 // Initialize form based on transaction prop
-const initializeForm = (newValue) => {
+const initializeForm = (newValue: any) => {
   // Always reset first to clear previous state
   Object.assign(form, {
     date: new Date().toISOString().split('T')[0],
     description: '',
     category: 'Other',
     amount: 0,
-    status: 'Completed'
-  });
+    status: 'Completed',
+  })
 
   if (newValue) {
     // Use optional chaining and nullish coalescing for safer access
-    const t = newValue;
-    const dateValue = t.date ? new Date(t.date) : new Date();
-    
-    form.date = dateValue.toISOString().split('T')[0];
-    form.description = t.description ?? '';
-    form.category = t.category as TransactionCategory ?? 'Other';
-    form.amount = Number(t.amount) || 0;
-    form.status = t.status as TransactionStatus ?? 'Completed';
+    const t = newValue
+    const dateValue = t.date ? new Date(t.date) : new Date()
+
+    form.date = dateValue.toISOString().split('T')[0]
+    form.description = t.description ?? ''
+    form.category = (t.category as TransactionCategory) ?? 'Other'
+    form.amount = Number(t.amount) || 0
+    form.status = (t.status as TransactionStatus) ?? 'Completed'
   }
-};
+}
 
 // Watch for transaction prop changes
-watch(() => props.transaction, (newVal) => {
-  initializeForm(newVal);
-}, { immediate: true, deep: true });
+watch(
+  () => props.transaction,
+  (newVal) => {
+    initializeForm(newVal)
+  },
+  { immediate: true, deep: true },
+)
 
 // Validation and error state
 const errors = reactive({
@@ -183,11 +182,11 @@ const errors = reactive({
   description: '',
   category: '',
   amount: '',
-  status: ''
-});
+  status: '',
+})
 
-const isSubmitting = ref(false);
-const isEditing = computed(() => !!props.transaction);
+const isSubmitting = ref(false)
+const isEditing = computed(() => !!props.transaction)
 
 // Available options
 const categories: TransactionCategory[] = [
@@ -198,82 +197,73 @@ const categories: TransactionCategory[] = [
   'Utilities',
   'Entertainment',
   'Healthcare',
-  'Other'
-];
+  'Other',
+]
 
-const statuses: TransactionStatus[] = [
-  'Completed',
-  'Pending',
-  'Failed'
-];
+const statuses: TransactionStatus[] = ['Completed', 'Pending', 'Failed']
 
 // Validate form
 const validateForm = (): boolean => {
-  let isValid = true;
-  
+  let isValid = true
+
   // Reset errors
-  Object.keys(errors).forEach(key => {
-    errors[key as keyof typeof errors] = '';
-  });
-  
+  Object.keys(errors).forEach((key) => {
+    errors[key as keyof typeof errors] = ''
+  })
+
   // Validate date
   if (!form.date) {
-    errors.date = 'Date is required';
-    isValid = false;
+    errors.date = 'Date is required'
+    isValid = false
   }
-  
+
   // Validate description
   if (!form.description) {
-    errors.description = 'Description is required';
-    isValid = false;
+    errors.description = 'Description is required'
+    isValid = false
   } else if (form.description.length < 3) {
-    errors.description = 'Description must be at least 3 characters';
-    isValid = false;
+    errors.description = 'Description must be at least 3 characters'
+    isValid = false
   }
-  
+
   // Validate amount
   if (form.amount === 0) {
-    errors.amount = 'Amount cannot be zero';
-    isValid = false;
+    errors.amount = 'Amount cannot be zero'
+    isValid = false
   }
-  
-  return isValid;
-};
+
+  return isValid
+}
 
 // Handle form submission
 const handleSubmit = () => {
   if (!validateForm()) {
-    return;
+    return
   }
-  
-  isSubmitting.value = true;
-  
-	try {
-	const transactionData = {
+
+  isSubmitting.value = true
+
+  try {
+    const transactionData = {
       date: form.date,
       description: form.description.trim(),
       category: form.category,
       amount: Number(form.amount),
-      status: form.status
-	};
-	
+      status: form.status,
+    }
+
     if (props.transaction?.id) {
       // Editing existing transaction
       emit('save', {
         id: props.transaction.id,
-        ...transactionData
-      });
+        ...transactionData,
+      })
     } else {
       // Adding new transaction
-      emit('save', { ...transactionData });
+      emit('save', { ...transactionData })
     }
   } finally {
-    isSubmitting.value = false;
+    isSubmitting.value = false
   }
-};
+}
 </script>
-
-<style lang="scss" scoped>
-// Component-specific styles can be added here if needed
-// Most styles are in the global SCSS file: src/styles/components/_modals.scss
-</style>

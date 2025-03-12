@@ -5,8 +5,8 @@
  *
  * @module graphql/resolvers/summary
  */
-import { getClient } from "../../db/index";
-import type { SummaryData, GraphQLContext } from "../../types/index";
+import { getClient } from '../../db/index';
+import type { SummaryData, GraphQLContext } from '../../types/index';
 
 /**
  * Summary resolvers
@@ -16,11 +16,7 @@ export const summaryResolvers = {
     /**
      * Get summary data for the dashboard
      */
-    summaryData: async (
-      _: any,
-      __: any,
-      _context: GraphQLContext
-    ): Promise<SummaryData> => {
+    summaryData: async (_: any, __: any, _context: GraphQLContext): Promise<SummaryData> => {
       try {
         const client = getClient();
 
@@ -28,22 +24,18 @@ export const summaryResolvers = {
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth() + 1;
         const currentYear = currentDate.getFullYear();
-        const firstDayOfMonth = `${currentYear}-${currentMonth
-          .toString()
-          .padStart(2, "0")}-01`;
-        const lastDayOfMonth = new Date(currentYear, currentMonth, 0)
-          .toISOString()
-          .split("T")[0];
+        const firstDayOfMonth = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-01`;
+        const lastDayOfMonth = new Date(currentYear, currentMonth, 0).toISOString().split('T')[0];
 
         // Get previous month's income and expenses
         const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
         const previousYear = currentMonth === 1 ? currentYear - 1 : currentYear;
         const firstDayOfPreviousMonth = `${previousYear}-${previousMonth
           .toString()
-          .padStart(2, "0")}-01`;
+          .padStart(2, '0')}-01`;
         const lastDayOfPreviousMonth = new Date(previousYear, previousMonth, 0)
           .toISOString()
-          .split("T")[0];
+          .split('T')[0];
 
         // Query for current month's income
         const incomeResult = await client.query(
@@ -67,9 +59,7 @@ export const summaryResolvers = {
            WHERE date BETWEEN $1 AND $2`,
           [firstDayOfPreviousMonth, lastDayOfPreviousMonth]
         );
-        const previousMonthTotal = parseFloat(
-          previousMonthResult.rows[0].total
-        );
+        const previousMonthTotal = parseFloat(previousMonthResult.rows[0].total);
 
         // Query for total balance
         const balanceResult = await client.query(
@@ -83,9 +73,7 @@ export const summaryResolvers = {
 
         if (previousMonthTotal !== 0) {
           percentChange =
-            ((currentMonthTotal - previousMonthTotal) /
-              Math.abs(previousMonthTotal)) *
-            100;
+            ((currentMonthTotal - previousMonthTotal) / Math.abs(previousMonthTotal)) * 100;
         }
 
         return {
@@ -95,8 +83,8 @@ export const summaryResolvers = {
           percentChange,
         };
       } catch (error) {
-        console.error("Error fetching summary data:", error);
-        throw new Error("Failed to fetch summary data");
+        console.error('Error fetching summary data:', error);
+        throw new Error('Failed to fetch summary data');
       }
     },
   },

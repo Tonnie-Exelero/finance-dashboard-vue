@@ -100,7 +100,7 @@ The project follows a modular architecture to ensure maintainability and separat
 
 ### Prerequisites
 
-- Node.js (v20+)
+- Node.js (v20.9+)
 - Yarn package manager
 - Docker and Docker Compose (optional)
 - PostgreSQL database (if not using Docker)
@@ -117,6 +117,8 @@ cd finance-dashboard-vue
 2. Install dependencies:
 
 ```bash
+nvm use
+
 yarn install
 ```
 

@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { mockClient } from "../../../__tests__/setup";
-import { summaryResolvers } from "../summary";
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { mockClient } from '../../../__tests__/setup';
+import { summaryResolvers } from '../summary';
 
-describe("Summary Resolvers", () => {
+describe('Summary Resolvers', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
@@ -10,27 +10,27 @@ describe("Summary Resolvers", () => {
     mockClient.query.mockReset();
   });
 
-  describe("Query resolvers", () => {
-    it("fetches summary data", async () => {
+  describe('Query resolvers', () => {
+    it('fetches summary data', async () => {
       // Setup mock responses for the multiple queries in summaryData
       // First query - total balance
       mockClient.query.mockImplementationOnce(() => ({
-        rows: [{ total: "5000.00" }],
+        rows: [{ total: '5000.00' }],
       }));
 
       // Second query - monthly income
       mockClient.query.mockImplementationOnce(() => ({
-        rows: [{ total: "3000.00" }],
+        rows: [{ total: '3000.00' }],
       }));
 
       // Third query - monthly expenses
       mockClient.query.mockImplementationOnce(() => ({
-        rows: [{ total: "1500.00" }],
+        rows: [{ total: '1500.00' }],
       }));
 
       // Fourth query - previous month total
       mockClient.query.mockImplementationOnce(() => ({
-        rows: [{ total: "4800.00" }],
+        rows: [{ total: '4800.00' }],
       }));
 
       const result = await summaryResolvers.Query.summaryData(null, {}, {});
@@ -43,17 +43,17 @@ describe("Summary Resolvers", () => {
       expect(mockClient.query).toHaveBeenCalledTimes(4);
     });
 
-    it("handles database errors", async () => {
+    it('handles database errors', async () => {
       // Setup mock to throw an error
-      mockClient.query.mockRejectedValueOnce(new Error("Database error"));
+      mockClient.query.mockRejectedValueOnce(new Error('Database error'));
 
       // Expect the resolver to throw an error
-      await expect(
-        summaryResolvers.Query.summaryData(null, {}, {}),
-      ).rejects.toThrow("Failed to fetch summary data");
+      await expect(summaryResolvers.Query.summaryData(null, {}, {})).rejects.toThrow(
+        'Failed to fetch summary data'
+      );
     });
 
-    it("handles empty data", async () => {
+    it('handles empty data', async () => {
       // Setup mock responses for empty results
       mockClient.query.mockImplementation(() => ({
         rows: [{ total: null }],

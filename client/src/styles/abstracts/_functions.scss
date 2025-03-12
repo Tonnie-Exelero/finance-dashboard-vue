@@ -1,7 +1,6 @@
-@use "./variables" as v;
-@use "sass:color";
-@use "sass:map";
-
+@use './variables' as v;
+@use 'sass:color';
+@use 'sass:map';
 
 // Convert pixels to rem
 @function rem($pixels, $context: 16) {
@@ -35,10 +34,7 @@
 
 // Get a contrasting text color (black or white) based on background color
 @function contrast-color($color) {
-  $luminance: (
-      0.299 * red($color) + 0.587 * green($color) + 0.114 * blue($color)
-    ) /
-    255;
+  $luminance: (0.299 * red($color) + 0.587 * green($color) + 0.114 * blue($color)) / 255;
   @return if($luminance > 0.5, v.$color-gray-900, white);
 }
 

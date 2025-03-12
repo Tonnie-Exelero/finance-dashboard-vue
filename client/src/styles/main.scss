@@ -3,25 +3,25 @@
 // @import 'abstracts/index';
 
 // Base styles
-@use "base/reset";
-@use "base/typography";
+@use 'base/reset';
+@use 'base/typography';
 
 // Components
-@use "components/button";
-@use "components/card";
-@use "components/form";
-@use "components/table";
-@use "components/modal";
+@use 'components/button';
+@use 'components/card';
+@use 'components/form';
+@use 'components/table';
+@use 'components/modal';
 
 // Layout
-@use "layout/header";
-@use "layout/main";
+@use 'layout/header';
+@use 'layout/main';
 
 // Themes
-@use "themes/dark";
+@use 'themes/dark';
 
 // Utilities
-@use "utilities/custom";
+@use 'utilities/custom';
 
 // Import Tailwind
 @tailwind base;

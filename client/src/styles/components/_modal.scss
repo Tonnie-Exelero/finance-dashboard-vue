@@ -1,4 +1,4 @@
-@use "../abstracts" as a;
+@use '../abstracts' as a;
 
 .modal-backdrop {
   position: fixed;
@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: a.z-index("modal-backdrop");
+  z-index: a.z-index('modal-backdrop');
   padding: a.$spacing-4;
 }
 
@@ -22,7 +22,7 @@
   max-width: 500px;
   max-height: calc(100vh - #{a.$spacing-8});
   overflow-y: auto;
-  z-index: a.z-index("modal");
+  z-index: a.z-index('modal');
 
   @include a.custom-scrollbar;
 
