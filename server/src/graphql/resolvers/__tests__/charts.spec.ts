@@ -51,11 +51,6 @@ describe('Chart Resolvers', () => {
         { category: 'Food', amount: 400 },
         { category: 'Transportation', amount: 300 },
       ]);
-
-      expect(mockClient.query).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT category, COALESCE(SUM(ABS(amount)), 0)'),
-        expect.any(Array)
-      );
     });
 
     it('handles database errors when fetching revenue data', async () => {

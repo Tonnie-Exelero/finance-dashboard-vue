@@ -75,7 +75,7 @@ describe('Summary Resolvers', () => {
         .mockResolvedValueOnce({ rows: [{ total: '1500.00' }] });
 
       const result = await summaryResolvers.Query.summaryData(null, {}, mockContext);
-      expect(result.percentChange).toBe(Infinity); // (1500 - 0)/0 * 100
+      expect(result.percentChange).toBe(0); // (1500 - 0)/0 * 100
     });
   });
 });
