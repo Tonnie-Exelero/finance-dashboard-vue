@@ -18,10 +18,10 @@ let client: pg.Client;
 export async function connectToDatabase(): Promise<pg.Client> {
   // Create PostgreSQL client with typed configuration
   const config: DbConfig = {
-    host: process.env.PGHOST || 'ep-lively-credit-abhzsoyy-pooler.eu-west-2.aws.neon.tech',
+    host: process.env.PGHOST || '',
     port: Number(process.env.PGPORT) || 5432,
-    database: process.env.PGDATABASE || 'neondb',
-    user: process.env.PGUSER || 'neondb_owner',
+    database: process.env.PGDATABASE || '',
+    user: process.env.PGUSER || '',
     password: process.env.PGPASSWORD || '',
     ssl: process.env.NODE_ENV === 'production',
   };

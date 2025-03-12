@@ -5,12 +5,16 @@
  *
  * @module server
  */
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Load .env from project root
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import dotenv from 'dotenv';
-
-// Load environment variables
-dotenv.config();
 
 // Import database connection
 import { connectToDatabase } from './db/index';

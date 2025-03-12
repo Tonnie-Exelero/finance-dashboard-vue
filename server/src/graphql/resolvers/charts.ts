@@ -5,7 +5,7 @@
  *
  * @module graphql/resolvers/charts
  */
-import { getClient } from '../../db/index';
+import { getClient } from '../../db';
 import type { RevenueData, ExpenseBreakdown, GraphQLContext } from '../../types/index';
 
 /**
