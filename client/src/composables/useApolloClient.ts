@@ -5,50 +5,50 @@
  *
  * @module composables/useApolloClient
  */
+import type { DefaultOptions } from '@apollo/client/core'
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core'
-import { ref } from 'vue'
+import { provideApolloClient } from '@vue/apollo-composable'
 
 /**
  * Initialize and provide the Apollo Client
  * @returns {ApolloClient} The configured Apollo Client instance
  */
 export function useApolloClient() {
-  const client = ref<ApolloClient<any> | null>(null)
-
-  const initializeApolloClient = () => {
-    // Determine the GraphQL endpoint based on environment
+  // HTTP connection to the API
+  const httpLink = createHttpLink({
     // @ts-expect-error
-    const uri = import.meta.env.VITE_API_URL || 'http://localhost:4000/graphql'
+    uri: import.meta.env.VITE_API_URL || 'http://localhost:4000/graphql',
+  })
 
-    // Create HTTP link
-    const httpLink = createHttpLink({
-      uri,
-      credentials: 'include',
-    })
+  // Cache implementation
+  const cache = new InMemoryCache()
 
-    // Create Apollo Client
-    client.value = new ApolloClient({
-      link: httpLink,
-      cache: new InMemoryCache(),
-      defaultOptions: {
-        watchQuery: {
-          fetchPolicy: 'cache-and-network',
-        },
-      },
-      // @ts-expect-error
-      connectToDevTools: import.meta.env.VITE_NODE_ENV !== 'production',
-    })
-
-    return client.value
+  // Default options
+  const defaultOptions: DefaultOptions = {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network',
+      errorPolicy: 'all',
+    },
+    query: {
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all',
+    },
+    mutate: {
+      errorPolicy: 'all',
+    },
   }
 
-  // Initialize client if not already initialized
-  if (!client.value) {
-    initializeApolloClient()
-  }
+  // Create the apollo client
+  const apolloClient = new ApolloClient({
+    link: httpLink,
+    cache,
+    defaultOptions,
+    // @ts-expect-error
+    connectToDevTools: import.meta.env.VITE_NODE_ENV !== 'production',
+  })
 
-  return {
-    client,
-    initializeApolloClient,
-  }
+  // Provide the apollo client to the Vue app
+  provideApolloClient(apolloClient)
+
+  return apolloClient
 }
