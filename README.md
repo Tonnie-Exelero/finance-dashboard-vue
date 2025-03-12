@@ -125,8 +125,13 @@ yarn install
 3. Set up environment variables:
 
 ```bash
-# Postgres DB URL. Replace the variables in curly braces {} with your postgresql details
+# Postgres DB URL. Replace the variables, including those in curly braces {} with your postgresql details
 POSTGRES_URL=`postgresql://{user}:{password}@localhost:{port}/{database}?schema=public`
+PGHOST=localhost
+PGPORT=5433
+PGDATABASE=financial_dashboard
+PGUSER=postgres
+PGPASSWORD=postgres
 
 # Server Configuration
 PORT=4000
