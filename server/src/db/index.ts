@@ -7,7 +7,7 @@
  * @module db/index
  */
 import pg from 'pg';
-import { seedData } from './seed';
+import { seedData } from './seed.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';

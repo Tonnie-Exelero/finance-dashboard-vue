@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mockClient } from '../../../__tests__/setup';
-import { transactionResolvers } from '../transactions';
+import { mockClient } from '../../../__tests__/setup.js';
+import { transactionResolvers } from '../transactions.js';
 
 describe('Transaction Resolvers', () => {
   const mockContext = {

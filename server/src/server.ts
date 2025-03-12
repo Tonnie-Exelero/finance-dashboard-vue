@@ -8,10 +8,10 @@
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import express from 'express';
-import { connectToDatabase, query } from './db';
-import { typeDefs } from './graphql/schema';
-import { resolvers } from './graphql/resolvers';
-import type { GraphQLContext } from './types';
+import { connectToDatabase, query } from './db/index.js';
+import { typeDefs } from './graphql/schema/index.js';
+import { resolvers } from './graphql/resolvers/index.js';
+import type { GraphQLContext } from './types/index.js';
 import cors from 'cors';
 
 // Vercel requires this for serverless functions

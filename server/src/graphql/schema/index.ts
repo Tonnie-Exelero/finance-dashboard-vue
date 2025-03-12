@@ -7,6 +7,7 @@
  */
 import gql from 'graphql-tag';
 
+// @ts-ignore
 export const typeDefs = gql`
   type Query {
     """

@@ -5,7 +5,7 @@
  *
  * @module graphql/resolvers/charts
  */
-import type { RevenueData, ExpenseBreakdown, GraphQLContext } from '../../types/index';
+import type { RevenueData, ExpenseBreakdown, GraphQLContext } from '../../types/index.js';
 
 /**
  * Chart resolvers

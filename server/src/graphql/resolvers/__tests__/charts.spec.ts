@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mockClient } from '../../../__tests__/setup';
-import { chartResolvers } from '../charts';
+import { mockClient } from '../../../__tests__/setup.js';
+import { chartResolvers } from '../charts.js';
 
 describe('Chart Resolvers', () => {
   // Create a mock context with the db.query method
