@@ -17,6 +17,7 @@ A responsive dashboard application for visualizing financial data with a Vue.js 
 ## Tech Stack
 
 ### Frontend
+
 - Vue.js 3 with Composition API
 - TypeScript for type safety
 - Pinia for state management
@@ -28,12 +29,14 @@ A responsive dashboard application for visualizing financial data with a Vue.js 
 - Lucide Vue for icons
 
 ### Backend
+
 - Node.js with TypeScript
 - Apollo Server for GraphQL API
 - PostgreSQL for data storage
 - GraphQL for API queries and mutations
 
 ### Development Tools
+
 - ESLint for code linting
 - Prettier for code formatting
 - Husky for pre-commit hooks
@@ -97,7 +100,7 @@ The project follows a modular architecture to ensure maintainability and separat
 
 ### Prerequisites
 
-- Node.js (v20+)
+- Node.js (v20.9+)
 - Yarn package manager
 - Docker and Docker Compose (optional)
 - PostgreSQL database (if not using Docker)
@@ -105,27 +108,33 @@ The project follows a modular architecture to ensure maintainability and separat
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/Tonnie-Exelero/finance-dashboard-vue.git
 cd finance-dashboard-vue
 ```
 
 2. Install dependencies:
+
 ```bash
+nvm use
+
 yarn install
 ```
 
 3. Set up environment variables:
+
 ```bash
-DB_HOST=localhost
-DB_PORT=5433
-DB_NAME=financial_dashboard
-DB_USER=postgres
-DB_PASSWORD=your_password
+PGHOST=localhost
+PGPORT=5432
+PGDATABASE=financial_dashboard
+PGUSER=postgres
+PGPASSWORD=your_password
 PORT=4000
 ```
 
 4. Start project:
+
 ```bash
 # Start both frontend and backend
 yarn dev
@@ -139,11 +148,13 @@ docker-compose up -d
 ```
 
 5. Type checking:
+
 ```bash
 yarn type-check
 ```
 
 6. Linting and Formatting:
+
 ```bash
 # Run linting
 yarn lint
@@ -153,6 +164,7 @@ yarn format
 ```
 
 7. Testing:
+
 ```bash
 yarn test
 
@@ -164,6 +176,7 @@ yarn workspace financial-dashboard-server test
 ```
 
 8. Deployment:
+
 ```bash
 # Build the frontend and backend
 yarn build
@@ -173,6 +186,7 @@ yarn start
 ```
 
 9. Deploy with Docker:
+
 ```bash
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```

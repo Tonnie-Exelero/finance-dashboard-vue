@@ -5,9 +5,9 @@
  *
  * @module graphql/resolvers
  */
-import { transactionResolvers } from "./transactions";
-import { summaryResolvers } from "./summary";
-import { chartResolvers } from "./charts";
+import { transactionResolvers } from './transactions';
+import { summaryResolvers } from './summary';
+import { chartResolvers } from './charts';
 
 export const resolvers = {
   Query: {

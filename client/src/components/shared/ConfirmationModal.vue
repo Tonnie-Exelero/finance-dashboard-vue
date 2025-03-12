@@ -7,20 +7,16 @@
           <XIcon />
         </button>
       </div>
-      
+
       <div class="modal__body">
         <p>{{ message }}</p>
       </div>
-      
+
       <div class="modal__footer">
-        <button 
-          type="button"
-          @click="$emit('cancel')"
-          class="btn btn--outline"
-        >
+        <button type="button" @click="$emit('cancel')" class="btn btn--outline">
           {{ cancelText }}
         </button>
-        <button 
+        <button
           type="button"
           @click="$emit('confirm')"
           class="btn"
@@ -36,14 +32,14 @@
 <script setup lang="ts">
 /**
  * Confirmation Modal Component
- * 
+ *
  * Reusable modal for confirming actions.
- * 
+ *
  * @component
  * @emits confirm - Emitted when the confirm button is clicked
  * @emits cancel - Emitted when the cancel button is clicked
  */
-import { XIcon } from 'lucide-vue-next';
+import { XIcon } from 'lucide-vue-next'
 
 defineProps({
   /**
@@ -51,28 +47,28 @@ defineProps({
    */
   title: {
     type: String,
-    default: 'Confirm Action'
+    default: 'Confirm Action',
   },
   /**
    * Modal message
    */
   message: {
     type: String,
-    required: true
+    required: true,
   },
   /**
    * Confirm button text
    */
   confirmText: {
     type: String,
-    default: 'Confirm'
+    default: 'Confirm',
   },
   /**
    * Cancel button text
    */
   cancelText: {
     type: String,
-    default: 'Cancel'
+    default: 'Cancel',
   },
   /**
    * Confirm button variant
@@ -80,23 +76,19 @@ defineProps({
   confirmVariant: {
     type: String,
     default: 'primary',
-    validator: (value: string) => ['primary', 'secondary', 'danger'].includes(value)
-  }
-});
+    // eslint-disable-next-line
+    validator: (value: string) => ['primary', 'secondary', 'danger'].includes(value),
+  },
+})
 
 defineEmits<{
   /**
    * Emitted when the confirm button is clicked
    */
-  (e: 'confirm'): void;
+  (e: 'confirm'): void
   /**
    * Emitted when the cancel button is clicked
    */
-  (e: 'cancel'): void;
-}>();
+  (e: 'cancel'): void
+}>()
 </script>
-
-<style lang="scss" scoped>
-// Component-specific styles can be added here if needed
-// Most styles are in the global SCSS file: src/styles/components/_modals.scss
-</style>

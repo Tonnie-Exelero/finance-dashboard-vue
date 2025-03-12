@@ -1,4 +1,4 @@
-@use "./variables" as v;
+@use './variables' as v;
 
 // Responsive breakpoints
 @mixin respond-to($breakpoint) {
@@ -26,12 +26,7 @@
 }
 
 // Flexbox utilities
-@mixin flex(
-  $direction: row,
-  $justify: flex-start,
-  $align: stretch,
-  $wrap: nowrap
-) {
+@mixin flex($direction: row, $justify: flex-start, $align: stretch, $wrap: nowrap) {
   display: flex;
   flex-direction: $direction;
   justify-content: $justify;

@@ -5,12 +5,8 @@
  *
  * @module graphql/resolvers/charts
  */
-import { getClient } from "../../db/index";
-import type {
-  RevenueData,
-  ExpenseBreakdown,
-  GraphQLContext,
-} from "../../types/index";
+import { getClient } from '../../db/index';
+import type { RevenueData, ExpenseBreakdown, GraphQLContext } from '../../types/index';
 
 /**
  * Chart resolvers
@@ -20,11 +16,7 @@ export const chartResolvers = {
     /**
      * Get revenue data for charts
      */
-    revenueData: async (
-      _: any,
-      __: any,
-      _context: GraphQLContext
-    ): Promise<RevenueData[]> => {
+    revenueData: async (_: any, __: any, _context: GraphQLContext): Promise<RevenueData[]> => {
       try {
         const client = getClient();
 
@@ -69,8 +61,8 @@ export const chartResolvers = {
           expenses: parseFloat(row.expenses),
         }));
       } catch (error) {
-        console.error("Error fetching revenue data:", error);
-        throw new Error("Failed to fetch revenue data");
+        console.error('Error fetching revenue data:', error);
+        throw new Error('Failed to fetch revenue data');
       }
     },
 
@@ -89,12 +81,8 @@ export const chartResolvers = {
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth() + 1;
         const currentYear = currentDate.getFullYear();
-        const firstDayOfMonth = `${currentYear}-${currentMonth
-          .toString()
-          .padStart(2, "0")}-01`;
-        const lastDayOfMonth = new Date(currentYear, currentMonth, 0)
-          .toISOString()
-          .split("T")[0];
+        const firstDayOfMonth = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-01`;
+        const lastDayOfMonth = new Date(currentYear, currentMonth, 0).toISOString().split('T')[0];
 
         const result = await client.query(
           `
@@ -114,8 +102,8 @@ export const chartResolvers = {
           amount: parseFloat(row.amount),
         }));
       } catch (error) {
-        console.error("Error fetching expense breakdown:", error);
-        throw new Error("Failed to fetch expense breakdown");
+        console.error('Error fetching expense breakdown:', error);
+        throw new Error('Failed to fetch expense breakdown');
       }
     },
   },

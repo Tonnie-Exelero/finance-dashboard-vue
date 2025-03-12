@@ -13,14 +13,10 @@
           <div v-else-if="error" class="flex items-center justify-center h-full text-red-500">
             Failed to load chart data
           </div>
-          <Line 
-            v-else
-            :data="revenueChartData" 
-            :options="chartOptions" 
-          />
+          <Line v-else :data="revenueChartData" :options="chartOptions" />
         </div>
       </div>
-      
+
       <!-- Expense Breakdown Chart -->
       <div class="card">
         <div class="card__header">
@@ -33,11 +29,7 @@
           <div v-else-if="error" class="flex items-center justify-center h-full text-red-500">
             Failed to load chart data
           </div>
-          <Doughnut 
-            v-else
-            :data="expenseChartData" 
-            :options="doughnutOptions" 
-          />
+          <Doughnut v-else :data="expenseChartData" :options="doughnutOptions" />
         </div>
       </div>
     </div>
@@ -47,29 +39,48 @@
 <script setup lang="ts">
 /**
  * Dashboard Charts Component
- * 
+ *
  * Displays charts for revenue trends and expense breakdown.
- * 
+ *
  * @component
  */
-import { computed } from 'vue';
-import { Line, Doughnut } from 'vue-chartjs';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { useDashboardStore } from '@/stores/dashboardStore';
+import { computed } from 'vue'
+import { Line, Doughnut } from 'vue-chartjs'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js'
+import { useDashboardStore } from '@/stores/dashboardStore'
 
 // Register ChartJS components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+)
 
 // Get dashboard store
-const dashboardStore = useDashboardStore();
+const dashboardStore = useDashboardStore()
 
 // Computed properties
-const loading = computed(() => dashboardStore.loading);
-const error = computed(() => dashboardStore.error);
-const revenueChartData = computed(() => dashboardStore.revenueChartData);
-const expenseChartData = computed(() => dashboardStore.expenseChartData);
-const chartOptions = computed(() => dashboardStore.chartOptions);
-const doughnutOptions = computed(() => dashboardStore.doughnutOptions);
+const loading = computed(() => dashboardStore.loading)
+const error = computed(() => dashboardStore.error)
+const revenueChartData = computed(() => dashboardStore.revenueChartData)
+const expenseChartData = computed(() => dashboardStore.expenseChartData)
+const chartOptions = computed(() => dashboardStore.chartOptions)
+const doughnutOptions = computed(() => dashboardStore.doughnutOptions)
 </script>
 
 <style lang="scss" scoped>
@@ -87,8 +98,12 @@ const doughnutOptions = computed(() => dashboardStore.doughnutOptions);
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .dark .loader {
