@@ -125,12 +125,19 @@ yarn install
 3. Set up environment variables:
 
 ```bash
-PGHOST=localhost
-PGPORT=5432
-PGDATABASE=financial_dashboard
-PGUSER=postgres
-PGPASSWORD=your_password
+# Postgres DB URL. Replace the variables in curly braces {} with your postgresql details
+POSTGRES_URL=`postgresql://{user}:{password}@localhost:{port}/{database}?schema=public`
+
+# Server Configuration
 PORT=4000
+VITE_NODE_ENV=development
+
+# Client Configuration
+VITE_APP_VERSION=1.0.0
+VITE_API_URL=http://localhost:4000/api/graphql
+
+# URLs
+FRONTEND_URL=http://localhost:3000
 ```
 
 4. Start project:
