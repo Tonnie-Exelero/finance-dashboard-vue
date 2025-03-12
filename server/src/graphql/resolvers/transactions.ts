@@ -10,7 +10,7 @@ import type {
   TransactionInput,
   GraphQLContext,
   PaginationParams,
-} from '../../types/index';
+} from '../../types/index.js';
 
 /**
  * Transaction resolvers

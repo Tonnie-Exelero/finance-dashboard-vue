@@ -6,9 +6,9 @@ services:
     container_name: financial-dashboard-postgres
     restart: always
     environment:
-      POSTGRES_USER: ${PGUSER:-postgres}
+      POSTGRES_USER: ${PGUSER}
       POSTGRES_PASSWORD: ${PGPASSWORD}
-      POSTGRES_DB: ${PGDATABASE:-financial_dashboard}
+      POSTGRES_DB: ${PGDATABASE}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
@@ -23,10 +23,10 @@ services:
     depends_on:
       - postgres
     environment:
-      - PGHOST=postgres
+      - PGHOST=${PGHOST}
       - PGPORT=5433
-      - PGDATABASE=${PGDATABASE:-financial_dashboard}
-      - PGUSER=${PGUSER:-postgres}
+      - PGDATABASE=${PGDATABASE}
+      - PGUSER=${PGUSER}
       - PGPASSWORD=${PGPASSWORD}
       - PORT=${PORT:-4000}
       - NODE_ENV=production
@@ -44,7 +44,7 @@ services:
     depends_on:
       - server
     environment:
-      - VITE_API_URL=/graphql
+      - VITE_API_URL=/api/graphql
     ports:
       - "80:80"
     networks:

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { typeDefs } from '../schema';
-import { resolvers } from '../resolvers';
+import { typeDefs } from '../schema/index.js';
+import { resolvers } from '../resolvers/index.js';
 
 describe('GraphQL Schema', () => {
   it('creates a valid schema with resolvers', () => {
