@@ -1,0 +1,38 @@
+{
+  "builds": [
+    {
+      "src": "server/src/server.ts",
+      "use": "@vercel/node",
+      "config": {
+        "distDir": "server/dist"
+      }
+    },
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "client/dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server/src/server.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "client/dist/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "workspaces": {
+    "root": ".",
+    "packages": ["client", "server"]
+  }
+}
