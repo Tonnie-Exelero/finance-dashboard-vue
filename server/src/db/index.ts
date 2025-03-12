@@ -5,9 +5,9 @@
  *
  * @module db/index
  */
-import pg from "pg";
-import { seedData } from "./seed";
-import type { DbConfig } from "../types/index";
+import pg from 'pg';
+import { seedData } from './seed';
+import type { DbConfig } from '../types/index';
 
 let client: pg.Client;
 
@@ -16,28 +16,28 @@ let client: pg.Client;
  * @returns {Promise<pg.Client>} PostgreSQL client
  */
 export async function connectToDatabase(): Promise<pg.Client> {
-// Create PostgreSQL client with typed configuration
+  // Create PostgreSQL client with typed configuration
   const config: DbConfig = {
-    host: process.env.DB_HOST || "localhost",
-    port: Number(process.env.DB_PORT) || 5433,
-    database: process.env.DB_NAME || "financial_dashboard",
-    user: process.env.DB_USER || "postgres",
-    password: process.env.DB_PASSWORD || "Exelero93!",
-    ssl: process.env.NODE_ENV === "production"
+    host: process.env.PGHOST || 'ep-lively-credit-abhzsoyy-pooler.eu-west-2.aws.neon.tech',
+    port: Number(process.env.PGPORT) || 5432,
+    database: process.env.PGDATABASE || 'neondb',
+    user: process.env.PGUSER || 'neondb_owner',
+    password: process.env.PGPASSWORD || 'npg_K8iA5XMUsCIx',
+    ssl: process.env.NODE_ENV === 'production',
   };
 
   client = new pg.Client(config);
 
   try {
     await client.connect();
-    console.log("Connected to PostgreSQL database");
-    
+    console.log('Connected to PostgreSQL database');
+
     await createTables();
     await checkAndSeedData();
-    
+
     return client;
   } catch (error) {
-    console.error("Database connection error:", error);
+    console.error('Database connection error:', error);
     process.exit(1); // Exit process on connection failure
   }
 }
@@ -47,20 +47,20 @@ async function checkAndSeedData(): Promise<void> {
     const result = await client.query(
       "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'transactions')"
     );
-    
+
     if (!result.rows[0].exists) {
       await seedData(client);
-      console.log("Database seeded with initial data");
+      console.log('Database seeded with initial data');
       return;
     }
 
-    const countResult = await client.query("SELECT COUNT(*) FROM transactions");
+    const countResult = await client.query('SELECT COUNT(*) FROM transactions');
     if (parseInt(countResult.rows[0].count) === 0) {
       await seedData(client);
-      console.log("Database seeded with initial data");
+      console.log('Database seeded with initial data');
     }
   } catch (error) {
-    console.error("Data seeding error:", error);
+    console.error('Data seeding error:', error);
     throw error;
   }
 }
@@ -82,9 +82,9 @@ async function createTables(): Promise<void> {
       );
     `);
 
-    console.log("Database tables created or already exist");
+    console.log('Database tables created or already exist');
   } catch (error) {
-    console.error("Error creating tables:", error);
+    console.error('Error creating tables:', error);
     throw error;
   }
 }

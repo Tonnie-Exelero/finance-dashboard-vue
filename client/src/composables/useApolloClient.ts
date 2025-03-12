@@ -20,7 +20,8 @@ import { provideApolloClient } from '@vue/apollo-composable';
  */
 export function useApolloClient() {
   // HTTP connection to the API
-  const httpLink = createHttpLink({
+	const httpLink = createHttpLink({
+	  // @ts-ignore
     uri: import.meta.env.VITE_API_URL || 'http://localhost:4000/graphql',
   });
 

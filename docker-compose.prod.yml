@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -6,9 +6,9 @@ services:
     container_name: financial-dashboard-postgres
     restart: always
     environment:
-      POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME:-financial_dashboard}
+      POSTGRES_USER: ${PGUSER:-postgres}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_DB: ${PGDATABASE:-financial_dashboard}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
@@ -23,11 +23,11 @@ services:
     depends_on:
       - postgres
     environment:
-      - DB_HOST=postgres
-      - DB_PORT=5433
-      - DB_NAME=${DB_NAME:-financial_dashboard}
-      - DB_USER=${DB_USER:-postgres}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - PGHOST=postgres
+      - PGPORT=5433
+      - PGDATABASE=${PGDATABASE:-financial_dashboard}
+      - PGUSER=${PGUSER:-postgres}
+      - PGPASSWORD=${PGPASSWORD}
       - PORT=${PORT:-4000}
       - NODE_ENV=production
     ports:
